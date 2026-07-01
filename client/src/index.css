@@ -1,0 +1,99 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Prata&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Italianno&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Outfit", sans-serif;
+}
+
+/* clean styled component */
+@layer components {
+  .card {
+    @apply bg-black text-white rounded-lg py-4 px-5 text-center flex items-center justify-center hover:bg-white hover:text-black transition-all cursor-pointer;
+  }
+}
+
+.prata-regular {
+  font-family: "Prata", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.italianno-regular {
+  font-family: "Italianno", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+a {
+  text-decoration: none;
+}
+
+li {
+  list-style-type: none;
+}
+
+input,
+select {
+  /* min-height: 42px; */
+  border: 1px solid rgb(212, 212, 212);
+  border-radius: 5px !important;
+  /* width: 100%; */
+}
+
+.max-width {
+  height: 8px !important;
+  width: 8px !important;
+}
+
+.search {
+  border-radius: 50px !important;
+}
+
+.label {
+  margin-bottom: -5px;
+}
+
+input:focus,
+select:focus {
+  /* min-height: 42px; */
+  border: 1px solid rgb(134, 134, 134);
+  border-radius: 5px !important;
+  box-shadow: none !important;
+}
+
+textarea {
+  height: 54px !important;
+  border: 1px solid rgb(212, 212, 212);
+  border-radius: 5px !important;
+  /* width: 100%; */
+}
+
+textarea:focus {
+  min-height: 42px;
+  border: 1px solid rgb(134, 134, 134);
+  border-radius: 5px !important;
+  box-shadow: none !important;
+}
+
+/* button {
+  height: 42px !important;
+  box-shadow: none !important;
+} */
+
+table {
+  border-top: 2px solid rgb(160, 160, 160);
+  border-bottom: 2px solid rgb(160, 160, 160);
+}
+
+ul {
+  list-style-type: disc;
+  padding: 10px 0 !important;
+  padding-left: 20px !important;
+}
