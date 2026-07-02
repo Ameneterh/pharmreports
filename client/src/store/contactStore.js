@@ -15,12 +15,11 @@ export const useContactStore = create((set) => ({
   message: null,
 
   //   send new message
-  sendMessage: async ({ sender_name, sender_email, sender_phone, text }) => {
+  sendMessage: async ({ sender_name, sender_phone, text }) => {
     set({ isLoading: true, error: null });
     try {
       const response = await axios.post(`${API_URL}/send-message`, {
         sender_name,
-        sender_email,
         sender_phone,
         text,
       });

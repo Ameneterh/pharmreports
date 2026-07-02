@@ -36,10 +36,7 @@ export default function ContactUs() {
   const { sendMessage } = useContactStore();
   const { user } = useAuthStore();
 
-  const [name, setName] = useState(
-    user?.surname + " " + user?.otherNames || "",
-  );
-  const [email, setEmail] = useState(user?.email || "");
+  const [name, setName] = useState(user?.fullname || "");
   const [phone, setPhone] = useState(user?.phoneNumber || "");
   const [text, setText] = useState("");
 
@@ -48,7 +45,6 @@ export default function ContactUs() {
     try {
       await sendMessage({
         sender_name: name.toLowerCase(),
-        sender_email: email.toLowerCase(),
         sender_phone: phone,
         text,
       });
@@ -128,25 +124,6 @@ export default function ContactUs() {
                   className="w-full outline-none border-none focus:outline-none focus:border-none rounded-md p-2 bg-white"
                 />
                 <MdOutlinePhoneInTalk
-                  size={18}
-                  className="absolute right-2 top-3"
-                />
-              </div>
-
-              {/* email */}
-              <div className="relative rounded-md border border-black">
-                <label className="absolute font-semibold -top-3 bg-white px-1 left-1 text-xs text-gray-800">
-                  Your Email:
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full outline-none border-none focus:outline-none focus:border-none rounded-md p-2 bg-white"
-                />
-                <MdOutlineMarkEmailRead
                   size={18}
                   className="absolute right-2 top-3"
                 />

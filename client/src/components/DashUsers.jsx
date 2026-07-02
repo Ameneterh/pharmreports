@@ -32,6 +32,8 @@ export default function DashUsers() {
 
   const [formData, setFormData] = useState({});
 
+  console.log(users);
+
   const getUsers = async () => {
     try {
       const { users } = await getAllUsers();
@@ -211,10 +213,14 @@ export default function DashUsers() {
           <table className="border-collapse border-none leading-tight w-full">
             <thead className="bg-gray-400">
               <tr className="border-b-black border-b-2 text-sm">
+                <th className="px-4 py-1 text-left">S/N</th>
+                <th className="px-4 py-1 text-left">Username</th>
                 <th className="px-4 py-1 text-left">Name of User</th>
-                <th className="px-4 py-1 text-left">User Email</th>
+                {user.role === "architect" && (
+                  <th className="px-4 py-1 text-left">Created By</th>
+                )}
                 <th className="px-4 py-1 text-left">User Phone</th>
-                <th className="px-4 py-1 text-left">User Role</th>
+                <th className="px-4 py-1 text-left">Rank</th>
                 <th className="px-4 py-1 text-left">isAdmin</th>
                 <th className="px-4 py-1 text-left">Actions</th>
               </tr>
@@ -225,6 +231,10 @@ export default function DashUsers() {
                   key={index}
                   className={`${pickedUser.isDeleted ? "bg-red-200 text-red-700 font-semibold" : ""}`}
                 >
+                  <td className="px-4 py-1 text-sm text-nowrap">{index + 1}</td>
+                  <td className="px-4 py-1 text-sm text-nowrap">
+                    {pickedUser.username}
+                  </td>
                   <td className="flex items-center px-4 py-1 text-sm text-nowrap">
                     {pickedUser?.fullname}
                     {pickedUser?.isDeleted && (
@@ -242,14 +252,16 @@ export default function DashUsers() {
                       />
                     )}
                   </td>
-                  <td className="px-4 py-1 text-sm text-nowrap">
-                    {pickedUser.email}
-                  </td>
+                  {user.role === "architect" && (
+                    <td className="px-4 py-1 text-sm text-nowrap">
+                      {pickedUser?.createdBy?.fullname}
+                    </td>
+                  )}
                   <td className="px-4 py-1 text-sm text-nowrap">
                     {pickedUser.phoneNumber}
                   </td>
                   <td className="px-4 py-1 text-sm text-nowrap capitalize">
-                    {pickedUser.role}
+                    {pickedUser.rank}
                   </td>
                   <td className="px-4 py-1 text-sm text-nowrap capitalize">
                     <div className="flex items-center gap-1">

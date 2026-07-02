@@ -14,16 +14,20 @@ import {
 
 // add new user
 export const addUser = async (req, res) => {
-  const { fullname, email, phoneNumber, password, role } = req.body;
+  const { fullname, username, phoneNumber, password, role } = req.body;
 
   try {
     // check content from req.body
-    if (!fullname || !email || !phoneNumber || !password || !role) {
+    if (!fullname || !username || !phoneNumber || !password || !role) {
       throw new Error("All fields are required!");
     }
 
     // check if user already exists
-    const userAlreadyExists = await User.findOne({ email });
+    const userAlreadyExists = await User.findOne({ username }).collation({
+      locale: "en",
+      strength: 2,
+    });
+
     if (userAlreadyExists) {
       return res
         .status(400)
@@ -31,12 +35,13 @@ export const addUser = async (req, res) => {
     }
 
     // hash password and generate verification token
-    const hashedPassword = bcryptjs.hashSync(password, 10);
+    const hashedPassword = await bcryptjs.hash(password, 10);
 
     // save new user
     const user = await User.create({
       fullname,
-      email,
+      username,
+      usernameLower: username.toLowerCase(),
       phoneNumber,
       password: hashedPassword,
       role,
@@ -53,22 +58,34 @@ export const addUser = async (req, res) => {
       user: { ...user._doc, password: undefined },
     });
   } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: "Username already exists.",
+      });
+    }
+
+    throw error;
+    // res.status(400).json({ success: false, message: error.message });
   }
 };
 
 // add handler
 export const addNewUser = async (req, res) => {
-  const { fullname, email, phoneNumber, role } = req.body;
+  const { fullname, username, phoneNumber, role, rank, createdBy } = req.body;
 
   try {
     // check content from req.body
-    if (!fullname || !email || !phoneNumber || !role) {
+    if (!fullname || !username || !phoneNumber || !role || !rank) {
       throw new Error("All fields are required!");
     }
 
     // check if user already exists
-    const userAlreadyExists = await User.findOne({ email });
+    const userAlreadyExists = await User.findOne({ username }).collation({
+      locale: "en",
+      strength: 2,
+    });
+
     if (userAlreadyExists) {
       return res
         .status(400)
@@ -79,20 +96,21 @@ export const addNewUser = async (req, res) => {
     const tempPassword = "Today12345";
 
     // hash password and generate verification token
-    const hashedPassword = bcryptjs.hashSync(tempPassword, 10);
+    const hashedPassword = await bcryptjs.hash(tempPassword, 10);
 
     // save new user
     const user = await User.create({
       fullname,
-      email,
+      username,
+      usernameLower: username.toLowerCase(),
       phoneNumber,
       password: hashedPassword,
       role,
+      rank,
+      createdBy,
     });
 
     await user.save();
-
-    // const savedUser = await User.findOne({ email });
 
     res.status(201).json({
       success: true,
@@ -100,7 +118,15 @@ export const addNewUser = async (req, res) => {
       user: { ...user._doc, password: undefined },
     });
   } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
+    if (error.code === 11000) {
+      return res.status(400).json({
+        success: false,
+        message: "Username already exists.",
+      });
+    }
+
+    throw error;
+    // res.status(400).json({ success: false, message: error.message });
   }
 };
 
@@ -123,7 +149,7 @@ export const updateUser = async (req, res) => {
     // Only update fields that were actually sent
     const allowedFields = [
       "fullname",
-      "email",
+      "username",
       "phoneNumber",
       "avatar",
       "isDeleted",
@@ -252,23 +278,24 @@ export const updatePassword = async (req, res) => {
 
 // user login
 export const login = async (req, res) => {
-  const { email, password } = req.body;
-  // const email = req.body.email.toLowerCase().trim();
+  const { username, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({
+      usernameLower: username.toLowerCase(),
+    });
 
     if (!user) {
       return res
         .status(400)
-        .json({ success: false, message: "Invalid User Email!" });
+        .json({ success: false, message: "Invalid User Credentials!" });
     }
 
     const isValidPassword = await bcryptjs.compare(password, user.password);
     if (!isValidPassword) {
       return res.status(400).json({
         success: false,
-        message: "Invalid User Password Credentials!",
+        message: "Invalid User Credentials!!",
       });
     }
 
@@ -308,17 +335,17 @@ export const logout = async (req, res) => {
 // reset password
 export const resetPassword = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { username } = req.body;
     const { password } = req.body;
 
     const user = await User.findOne({
-      email,
+      username,
     });
 
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: `User with email ${email} does not exist`,
+        message: `User "${username}" does not exist`,
       });
     }
 
@@ -326,11 +353,8 @@ export const resetPassword = async (req, res) => {
     const hashedPassword = bcryptjs.hashSync(password, 10);
 
     user.password = hashedPassword;
-    // user.resetPasswordToken = undefined;
-    // user.resetPasswordExpiresAt = undefined;
 
     await user.save();
-    // await sendResetSuccessEmail(user.user_email);
 
     res
       .status(200)
@@ -344,7 +368,7 @@ export const resetPassword = async (req, res) => {
 // check authentication
 export const CheckAuth = async (req, res) => {
   try {
-    const user = await User.findById(req.userId).select("-user_password");
+    const user = await User.findById(req.userId).select("-password");
 
     if (!user) {
       return res

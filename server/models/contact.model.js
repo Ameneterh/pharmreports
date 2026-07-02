@@ -8,11 +8,6 @@ const contactSchema = new mongoose.Schema(
       trim: true,
     },
 
-    sender_email: {
-      type: String,
-      required: true,
-    },
-
     sender_phone: {
       type: String,
       required: true,

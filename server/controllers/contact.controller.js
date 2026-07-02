@@ -4,10 +4,10 @@ import Contact from "../models/contact.model.js";
 // create contact message
 export const sendMessage = async (req, res) => {
   try {
-    const { sender_name, sender_email, sender_phone, text } = req.body;
+    const { sender_name, sender_phone, text } = req.body;
 
     // Add validation for required fields
-    if (!sender_name || !sender_email || !sender_phone || !text) {
+    if (!sender_name || !sender_phone || !text) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
@@ -16,7 +16,6 @@ export const sendMessage = async (req, res) => {
 
     const message = await Contact.create({
       sender_name,
-      sender_email,
       sender_phone,
       text,
     });
@@ -114,36 +113,6 @@ export const readMessage = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to read message",
-    });
-  }
-};
-
-// get one invoice
-export const getInvoice = async (req, res) => {
-  const invoiceId = req.params.invoiceId;
-
-  try {
-    const invoice = await Invoice.findById(invoiceId)
-      .populate("client")
-      .populate("company")
-      .populate("createdBy");
-
-    if (!invoice) {
-      return res.status(404).json({
-        success: false,
-        message: "Invoice not found",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Invoice fetched successfully",
-      invoice,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
     });
   }
 };

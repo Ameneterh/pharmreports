@@ -177,14 +177,14 @@ export default function ReadReport({
                 </div>
                 <div className="flex flex-col w-full mb-2">
                   <p className="font-bold">Comments:</p>
-                  <div className="flex flex-col p-2 bg-slate-200 gap-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 p-2 bg-slate-200 gap-2">
                     {selectedReport?.comments?.length > 0 ? (
                       selectedReport?.comments?.map((comment) => (
                         <div
                           key={comment._id}
                           className="flex flex-col text-sm"
                         >
-                          <div className="p-1 bg-slate-50 rounded">
+                          <div className="p-1 bg-slate-50 rounded h-full">
                             <span className="block text-xs">
                               Comment by:{" "}
                               <span className="font-semibold">

@@ -49,9 +49,8 @@ const fadeInUp = {
 export default function RegisterUser() {
   const navigate = useNavigate();
 
-  const [surname, setSurname] = useState("");
-  const [otherNames, setOtherNames] = useState("");
-  const [email, setUserEmail] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [username, setUsername] = useState("");
   const [phoneNumber, setUserPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -75,9 +74,8 @@ export default function RegisterUser() {
 
     try {
       await addUser({
-        surname,
-        otherNames,
-        email,
+        fullname,
+        username,
         phoneNumber,
         password,
         role,
@@ -124,25 +122,17 @@ export default function RegisterUser() {
                   icon={CircleUserRound}
                   type="text"
                   // placeholder="Business Owner's Name"
-                  label="Staff Surname"
-                  value={surname}
-                  onChange={(e) => setSurname(e.target.value)}
+                  label="Staff Full Name"
+                  value={fullname}
+                  onChange={(e) => setFullname(e.target.value)}
                 />
                 <Input
                   icon={CircleUserRound}
                   type="text"
-                  // placeholder="Business Owner's Name"
-                  label="Staff Other Names"
-                  value={otherNames}
-                  onChange={(e) => setOtherNames(e.target.value)}
-                />
-                <Input
-                  icon={Mail}
-                  type="email"
                   // placeholder="Business Owner's Email"
-                  label="Staff Official Email"
-                  value={email}
-                  onChange={(e) => setUserEmail(e.target.value)}
+                  label="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
 

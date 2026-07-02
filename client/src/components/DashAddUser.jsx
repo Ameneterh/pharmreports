@@ -48,11 +48,12 @@ export default function DashAddUser() {
   const { addUser, addNewUser, error, isLoading, user } = useAuthStore();
 
   const [fullname, setFullname] = useState("");
-  const [email, setUserEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState("");
+  const [rank, setRank] = useState("");
 
   const [avatar, setAvatar] = useState(null);
   const [addedAvatar, setAddedAvatar] = useState(null);
@@ -69,9 +70,11 @@ export default function DashAddUser() {
     try {
       await addNewUser({
         fullname,
-        email,
+        username,
         phoneNumber,
         role,
+        rank,
+        createdBy: user._id,
       });
       navigate("/user-dashboard?tab=users");
       toast.success("New user added successfully!");
@@ -104,16 +107,13 @@ export default function DashAddUser() {
               />
 
               <Input
-                icon={Mail}
-                type="email"
+                icon={CircleUserRound}
+                type="text"
                 // placeholder="Business Owner's Email"
-                label="Staff Official Email"
-                value={email}
-                onChange={(e) => setUserEmail(e.target.value)}
+                label="Staff Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
-            </div>
-
-            <div className="flex flex-col items-start lg:flex-row gap-4">
               <div className="relative flex items-center w-full">
                 <Input
                   icon={Lock}
@@ -134,12 +134,42 @@ export default function DashAddUser() {
                   )}
                 </div>
               </div>
+            </div>
+
+            <div className="flex flex-col items-start lg:flex-row gap-4">
               <div className="flex flex-col w-full relative mt-2">
                 <label
                   htmlFor="role"
                   className="text-sm mb-1 absolute -top-3 left-2 bg-white px-1"
                 >
-                  Select User Role
+                  User Rank
+                </label>
+                <select
+                  onChange={(e) => setRank(e.target.value)}
+                  className="w-full pl-3 pr-3 py-[7px] bg-white rounded-lg border border-gray-700 focus:border-green-500 focus:ring-2 focus:ring-green-500 text-green-800 placeholder-green-800 transition duration-200 text-sm"
+                >
+                  <option value="">Select User Rank</option>
+                  <option value="Pharmacy Technician">
+                    Pharmacy Technician
+                  </option>
+                  <option value="Senior Pharm Tech">Senior Pharm Tech</option>
+                  <option value="Pharmacist 1">Pharmacist 1</option>
+                  <option value="Senior Pharmacist">Senior Pharmacist</option>
+                  <option value="Principal Pharmacist">
+                    Principal Pharmacist
+                  </option>
+                  <option value="Chief Pharmacist">Chief Pharmacist</option>
+                  <option value="Asst Director">Asst Director</option>
+                  <option value="Dep Director">Dep Director</option>
+                  <option value="Director">Director</option>
+                </select>
+              </div>
+              <div className="flex flex-col w-full relative mt-2">
+                <label
+                  htmlFor="role"
+                  className="text-sm mb-1 absolute -top-3 left-2 bg-white px-1"
+                >
+                  User Role
                 </label>
                 <select
                   onChange={(e) => setRole(e.target.value)}

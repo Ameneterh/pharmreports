@@ -20,12 +20,19 @@ export const useAuthStore = create((set) => ({
   justLoggedOut: false,
 
   //   add new new user account
-  addUser: async ({ fullname, email, phoneNumber, password, role }) => {
+  addUser: async ({
+    fullname,
+    username,
+    phoneNumber,
+    password,
+    role,
+    rank,
+  }) => {
     set({ isLoading: true, error: null });
     try {
       const response = await axios.post(`${API_URL}/add-user`, {
         fullname,
-        email,
+        username,
         phoneNumber,
         password,
         role,
@@ -46,14 +53,23 @@ export const useAuthStore = create((set) => ({
   },
 
   //   admin add new new user account
-  addNewUser: async ({ fullname, email, phoneNumber, role }) => {
+  addNewUser: async ({
+    fullname,
+    username,
+    phoneNumber,
+    role,
+    rank,
+    createdBy,
+  }) => {
     set({ isLoading: true, error: null });
     try {
       const response = await axios.post(`${API_URL}/add-new-user`, {
         fullname,
-        email,
+        username,
         phoneNumber,
         role,
+        rank,
+        createdBy,
       });
       set({
         // user: response.data.user,
@@ -72,83 +88,12 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  //   add new new business account
-  addBusiness: async ({
-    business_name,
-    business_email,
-    business_password,
-    business_phone,
-    business_address,
-    banker,
-    account_name,
-    account_number,
-    business_logo,
-  }) => {
-    set({ isBizLoading: true, bizError: null });
-    try {
-      const response = await axios.post(`${API_URL}/add-new-business`, {
-        business_name,
-        business_email,
-        business_password,
-        business_phone,
-        business_address,
-        banker,
-        account_name,
-        account_number,
-        business_logo,
-      });
-      set({
-        business: response.data.business,
-        isBizAuthenticated: true,
-        isBizLoading: false,
-      });
-    } catch (error) {
-      set({
-        bizError:
-          error.response?.data?.message ||
-          error.message ||
-          "Error registering business",
-        isBizLoading: false,
-      });
-      throw error;
-    }
-  },
-
-  // verify email
-  verifyUser: async (code) => {
-    set({ isLoading: true, error: null });
-
-    try {
-      const response = await axios.post(`${API_URL}/verify-email`, {
-        code,
-      });
-
-      set({
-        user: response.data.user,
-        isAuthenticated: true,
-        isLoading: false,
-      });
-
-      return response.data;
-    } catch (error) {
-      set({
-        error:
-          error.response?.data?.message ||
-          error.message ||
-          "Error verifying email",
-        isLoading: false,
-      });
-
-      throw error;
-    }
-  },
-
   //   user login
-  login: async (email, password) => {
+  login: async (username, password) => {
     set({ isLoading: true, error: null });
     try {
       const response = await axios.post(`${API_URL}/user-login`, {
-        email,
+        username,
         password,
       });
 
@@ -204,11 +149,11 @@ export const useAuthStore = create((set) => ({
   },
 
   // password reset
-  resetPassword: async (email, password) => {
+  resetPassword: async (username, password) => {
     set({ isLoading: true, error: null });
     try {
       const response = await axios.post(`${API_URL}/reset-password`, {
-        email,
+        username,
         password,
       });
       set({ message: response.data.message, isLoading: false });

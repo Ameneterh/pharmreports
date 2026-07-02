@@ -47,32 +47,6 @@ export default function SendReport() {
 
   const [formData, setFormData] = useState({});
 
-  const [client_name, setName] = useState("");
-  const [client_address, setAddress] = useState("");
-  const [client_phone, setPhone] = useState("");
-  const [client_email, setEmail] = useState("");
-  // const [invoiceNumber, setInvNumber] = useState("");
-  // const [invDate, setInvDate] = useState(Date.now());
-  const [invoiceType, setInvoiceType] = useState("");
-  const [validity, setValidity] = useState("");
-
-  //   invoice table states
-  const [jobTitle, setJobTitle] = useState("");
-  const [jobDescription, setJobDescription] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [rate, setRate] = useState("");
-  const [amount, setAmount] = useState("");
-
-  //   populate list
-  const [list, setList] = useState([]);
-  const [total, setTotal] = useState(0);
-
-  //   get clients and one client
-  const [clients, setClients] = useState([]);
-  const [client, setClient] = useState(null);
-  const [invoices, setInvoices] = useState([]);
-  const { registerClient, getAllClients, getOneClient } = useClientStore();
-
   const getRegisteredClients = async () => {
     try {
       const { clients } = await getAllClients();
@@ -85,31 +59,6 @@ export default function SendReport() {
     }
   };
 
-  // const getInvoices = async () => {
-  //   try {
-  //     const { invoices } = await getAllInvoices();
-  //     // const filteredInvoices = invoices.filter(
-  //     //   (invoice) => user.business._id === invoice.company._id,
-  //     // );
-  //     setInvoices(invoices);
-  //     // setInvNumber((invoices.length + 1).toString().padStart(6, "0"));
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  // const getInvoices = async () => {
-  //   try {
-  //     const { invoices } = await getAllInvoices();
-  //     const filteredInvoices = invoices.filter(
-  //       (invoice) => user.affiliation._id === invoice.company._id
-  //     );
-  //     setInvoices(filteredInvoices);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   useEffect(() => {
     if (user?.fullname === undefined) {
       navigate("/add-handler");
@@ -117,48 +66,6 @@ export default function SendReport() {
     getRegisteredClients();
     // getInvoices();
   }, []);
-
-  const getClient = async (clientId) => {
-    try {
-      const { client } = await getOneClient(clientId);
-      setClient(client);
-      setName(client.client_name);
-      setEmail(client.client_email);
-      setPhone(client.client_phone);
-      setAddress(client.client_address);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleAddClient = async (e) => {
-    e.preventDefault();
-    const staff = user._id;
-    try {
-      await registerClient(
-        client_name,
-        client_email,
-        client_phone,
-        client_address,
-        staff,
-      );
-      getRegisteredClients();
-      setIsChecked(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // reset client details
-  const resetClient = () => {
-    window.location.reload();
-    setClient(null);
-    setName("");
-    setEmail("");
-    setPhone("");
-    setAddress("");
-    // setIsChecked(true);
-  };
 
   // save invoice
   const saveReport = async () => {
@@ -284,6 +191,7 @@ export default function SendReport() {
                         Station:
                       </p>
                       <select
+                        defaultValue={formData.workStation}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
@@ -314,6 +222,7 @@ export default function SendReport() {
                         Type:
                       </p>
                       <select
+                        defaultValue={formData.dutyType}
                         onChange={(e) =>
                           setFormData({ ...formData, dutyType: e.target.value })
                         }
@@ -340,6 +249,7 @@ export default function SendReport() {
                         Duty:
                       </p>
                       <select
+                        defaultValue={formData.timeOfDuty}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
@@ -368,6 +278,7 @@ export default function SendReport() {
                       </p>
                       <input
                         type="datetime-local"
+                        defaultValue={formData.dutyDateTime}
                         onChange={(e) =>
                           setFormData({
                             ...formData,

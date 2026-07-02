@@ -120,15 +120,13 @@ export default function DashProfile() {
       if (formData.fullname !== user.fullname)
         changedFields.fullname = formData.fullname;
 
-      if (formData.email !== user.email) changedFields.email = formData.email;
+      if (formData.username !== user.username)
+        changedFields.username = formData.username;
 
       if (formData.phoneNumber !== user.phoneNumber)
         changedFields.phoneNumber = formData.phoneNumber;
 
       if (imageFileUrl) changedFields.avatar = imageFileUrl;
-
-      // if (signatureUrl !== user.staff_signature)
-      //   changedFields.staff_signature = signatureUrl;
 
       await updateUser(user._id, changedFields);
       toast.success("User details updated successfully!");
@@ -235,19 +233,27 @@ export default function DashProfile() {
             label="* User Role"
             color="red"
             placeholder="role"
-            defaultValue={user?.role}
+            defaultValue={
+              user?.rank === "Asst Director" ||
+              user?.rank === "Dep Director" ||
+              user?.rank === "Director"
+                ? "Dep Dir/Head of Dept"
+                : user?.rank
+            }
             disabled
           />
           <Input
             icon={AtSign}
-            type="email"
-            id="email"
-            label="User Email"
-            placeholder="user@company.com"
+            type="text"
+            id="text"
+            label="* Username"
+            placeholder="Ameneterh"
             className="flex-1 w-full"
-            defaultValue={user.email}
+            defaultValue={user.username}
+            color="red"
+            disabled
             onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
+              setFormData({ ...formData, username: e.target.value })
             }
           />
         </div>

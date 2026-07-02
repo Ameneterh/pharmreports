@@ -27,6 +27,15 @@ const styles = StyleSheet.create({
   label: {
     fontWeight: "bold",
   },
+
+  name: {
+    fontWeight: "bold",
+    marginBottom: "8px",
+  },
+
+  commentNote: {
+    fontWeight: "light",
+  },
 });
 
 const ReportsPDF = ({ reports, startDate, endDate }) => {
@@ -99,10 +108,18 @@ const ReportsPDF = ({ reports, startDate, endDate }) => {
             <Text style={styles.label}>Comments:</Text>
 
             {report.comments?.map((comment) => (
-              <Text key={comment._id}>
-                {comment.commentBy?.surname} {comment.commentBy?.otherNames}:{" "}
-                {comment.comment}
-              </Text>
+              <>
+                <Text style={styles.name} key={comment._id}>
+                  {comment.commentBy.role === "pharmacist" &&
+                  comment.commentBy.isAdmin
+                    ? "Pharm Mrs"
+                    : comment.commentBy.role === "pharmacist"
+                      ? "Pharm"
+                      : "Pharm Tech"}{" "}
+                  {comment.commentBy?.fullname}:
+                  <Text style={styles.commentNote}>{comment.comment}</Text>
+                </Text>
+              </>
             ))}
           </View>
         </Page>

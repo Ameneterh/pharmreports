@@ -8,6 +8,7 @@ import {
   Eye,
   EyeOff,
   LogIn,
+  CircleUserRound,
 } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -18,7 +19,7 @@ export default function LoginPage() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { isLoading, login, error } = useAuthStore();
 
@@ -26,7 +27,7 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      await login(email, password);
+      await login(username, password);
       navigate("/user-dashboard?tab=dash");
     } catch (error) {
       console.log(error);
@@ -50,12 +51,12 @@ export default function LoginPage() {
           <div className="p-8">
             <form onSubmit={handleLogin} className="flex flex-col gap-4">
               <Input
-                icon={Mail}
-                type="email"
+                icon={CircleUserRound}
+                type="text"
                 // placeholder="Handler Email"
-                label="User Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                label="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
               <div className="relative flex items-center w-full">
                 <Input

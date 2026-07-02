@@ -14,12 +14,18 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
-    email: {
+    username: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 8,
+    },
+
+    usernameLower: {
       type: String,
       required: true,
       unique: true,
-      lowercase: true,
-      trim: true,
+      index: true,
     },
 
     phoneNumber: {
@@ -31,7 +37,6 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      // select: false,
       minlength: 8,
     },
 
@@ -62,9 +67,26 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
+    rank: {
+      type: String,
+      enum: [
+        "Pharmacy Technician",
+        "Senior Pharm Tech",
+        "Pharmacist 1",
+        "Senior Pharmacist",
+        "Principal Pharmacist",
+        "Chief Pharmacist",
+        "Asst Director",
+        "Dep Director",
+        "Director",
+      ],
+      required: true,
+    },
+
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      sparse: true,
     },
   },
   { timestamps: true },
