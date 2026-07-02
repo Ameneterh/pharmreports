@@ -22,10 +22,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 mongoose
-  .connect(
-    (process.env.MONGO_DB =
-      "mongodb+srv://amshpharmacy_db_user:taFX76pbJq7T8tzD@cluster0.neyjvtk.mongodb.net/?appName=AMSHRxReports"),
-  )
+  .connect(process.env.MONGO_DB)
   .then(() => console.log(`Connected to MongoDb Database!`))
   .catch((error) => console.log(error));
 
@@ -44,11 +41,6 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
   });
 }
-
-// app.use(express.static(path.join(__dirname, "/frontend/dist")));
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
-// });
 
 app.listen(PORT, () =>
   console.log(`Node/Express Server is running on Port ${PORT}`),

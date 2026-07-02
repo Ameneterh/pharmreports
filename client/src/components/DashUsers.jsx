@@ -26,20 +26,22 @@ export default function DashUsers() {
   const [showAdminModal, setShowAdminModal] = useState(false);
 
   const [userIdToDelete, setUserIdToDelete] = useState(null);
+  const [userIdToUnDelete, setUserIdToUnDelete] = useState(null);
 
   const [selectedUser, setSelectedUser] = useState("");
   const [isDeleted, setIsDeleted] = useState(false);
 
   const [formData, setFormData] = useState({});
 
-  console.log(users);
-
   const getUsers = async () => {
     try {
       const { users } = await getAllUsers();
 
-      if (user.role === "architect" || user.isAdmin) {
+      if (user.isAdmin && user.role === "architect") {
         setUsers(users);
+      }
+      if (user.isAdmin && user.role !== "architect") {
+        setUsers(users.filter((user) => !user.isDeleted));
       }
     } catch (error) {
       console.log(error);
@@ -59,6 +61,12 @@ export default function DashUsers() {
       handleDeleteUser();
     }
   }, [userIdToDelete]);
+
+  useEffect(() => {
+    if (userIdToUnDelete) {
+      handleUnDeleteUser();
+    }
+  }, [userIdToUnDelete]);
 
   const handleOpenModal = (userToUpdate) => {
     setSelectedUser(userToUpdate);
@@ -90,6 +98,20 @@ export default function DashUsers() {
     try {
       await updateUser(userIdToDelete._id, {
         isDeleted: true,
+      });
+
+      getUsers();
+
+      toast.success("User deleted successfully!");
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleUnDeleteUser = async () => {
+    try {
+      await updateUser(userIdToUnDelete._id, {
+        isDeleted: false,
       });
 
       getUsers();
@@ -240,8 +262,9 @@ export default function DashUsers() {
                     {pickedUser?.isDeleted && (
                       <MdOutlineDeleteSweep
                         size={16}
-                        className="text-red-800 ml-1"
+                        className="text-red-800 ml-1 cursor-pointer hover:scale-105 hover:text-red-950"
                         title="User Deleted!"
+                        onClick={() => setUserIdToUnDelete(pickedUser)}
                       />
                     )}
                     {pickedUser.isVerified && !pickedUser.isDeleted && (

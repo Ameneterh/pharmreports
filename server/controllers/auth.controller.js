@@ -3,14 +3,6 @@ import crypto from "crypto";
 
 import User from "../models/user.model.js";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
-import {
-  sendHandlerActivationEmail,
-  sendPasswordResetEmail,
-  sendResetSuccessEmail,
-  sendTemporaryHandlerCredentials,
-  sendVerificationEmail,
-  sendWelcomeEmail,
-} from "../mailtrap/emails.js";
 
 // add new user
 export const addUser = async (req, res) => {
