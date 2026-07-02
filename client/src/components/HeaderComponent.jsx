@@ -206,7 +206,7 @@ export default function HeaderComponent({ business }) {
               {user && (
                 <li>
                   <p
-                    onClick={handleLogout}
+                    onClick={confirmLogout}
                     className="text-red-500 font-bold cursor-pointer"
                   >
                     LOG OUT

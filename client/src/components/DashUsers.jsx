@@ -4,7 +4,6 @@ import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { MdOutlineDeleteSweep, MdFilterList } from "react-icons/md";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import { useAuthStore } from "../store/authStore";
-import { useClientStore } from "../store/clientStore";
 import { Search, Trash2, BadgeCheck, X, Check } from "lucide-react";
 import { Input } from "./Input";
 import { UserFiltersComponent } from "./DashFilterComponent";
@@ -24,6 +23,8 @@ export default function DashUsers() {
   const [users, setUsers] = useState([]);
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showAdminModal, setShowAdminModal] = useState(false);
+
   const [userIdToDelete, setUserIdToDelete] = useState(null);
 
   const [selectedUser, setSelectedUser] = useState("");
@@ -60,6 +61,11 @@ export default function DashUsers() {
   const handleOpenModal = (userToUpdate) => {
     setSelectedUser(userToUpdate);
     setShowModal(true);
+  };
+
+  const handleOpenMakeAdminModal = (userToUpdate) => {
+    setSelectedUser(userToUpdate);
+    setShowAdminModal(true);
   };
 
   const handleShowMore = async () => {
@@ -246,11 +252,25 @@ export default function DashUsers() {
                     {pickedUser.role}
                   </td>
                   <td className="px-4 py-1 text-sm text-nowrap capitalize">
-                    {pickedUser.isAdmin === true ? (
-                      <Check size={16} className="font-bold text-green-800" />
-                    ) : (
-                      <X size={16} className="font-bold text-red-800" />
-                    )}
+                    <div className="flex items-center gap-1">
+                      {pickedUser.isAdmin === true ? (
+                        <Check size={16} className="font-bold text-green-800" />
+                      ) : (
+                        <X size={16} className="font-bold text-red-800" />
+                      )}
+                      <input
+                        type="checkbox"
+                        checked={pickedUser.isAdmin}
+                        onChange={async () => {
+                          await updateUser(pickedUser._id, {
+                            isAdmin: !pickedUser.isAdmin,
+                          });
+
+                          getUsers();
+                          toast.success("Admin Status Updated Successfully!");
+                        }}
+                      />
+                    </div>
                   </td>
                   <td className="flex items-center gap-2 px-4 py-1 text-sm text-nowrap">
                     <span

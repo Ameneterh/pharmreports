@@ -1,4 +1,3 @@
-import Invoice from "../models/invoice.model.js";
 import User from "../models/user.model.js";
 import Contact from "../models/contact.model.js";
 

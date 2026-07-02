@@ -1,4 +1,3 @@
-import Invoice from "../models/invoice.model.js";
 import User from "../models/user.model.js";
 import Report from "../models/report.model.js";
 import { getDeadline, isSubmissionAllowed } from "../utils/reportDeadline.js";

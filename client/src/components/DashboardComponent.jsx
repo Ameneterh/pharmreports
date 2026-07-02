@@ -114,8 +114,6 @@ export default function DashboardComponent() {
     getReports();
   }, [user._id]);
 
-  console.log(reports);
-
   return (
     <div className="flex flex-col gap-4 w-full p-3 md:mt-6">
       <h1 className="text-2xl font-bold text-blue-900 bg-clip-text">

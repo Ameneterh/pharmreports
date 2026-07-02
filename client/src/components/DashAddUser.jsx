@@ -27,7 +27,6 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordStrengthMeter from "./PasswordStrengthMeter.jsx";
 import { useAuthStore } from "../store/authStore.js";
-import { useBusinessStore } from "../store/businessStore.js";
 import MainLayout from "../layout/MainLayout.jsx";
 import { PhoneField } from "./Input.jsx";
 
@@ -46,7 +45,6 @@ const fadeInUp = {
 
 export default function DashAddUser() {
   const navigate = useNavigate();
-  const { getAllBusinesses } = useBusinessStore();
   const { addUser, addNewUser, error, isLoading, user } = useAuthStore();
 
   const [fullname, setFullname] = useState("");
@@ -76,6 +74,7 @@ export default function DashAddUser() {
         role,
       });
       navigate("/user-dashboard?tab=users");
+      toast.success("New user added successfully!");
     } catch (error) {
       console.log(error);
     }

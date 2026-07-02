@@ -9,6 +9,7 @@ const API_URL =
 axios.defaults.withCredentials = true;
 
 export const useAuthStore = create((set) => ({
+  users: [],
   user: null,
   token: null,
   isAuthenticated: false,
@@ -202,24 +203,6 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  // forget password
-  forgotPassword: async (email) => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await axios.post(`${API_URL}/forgot-password`, {
-        email,
-      });
-      set({ message: response.data.message, isLoading: false });
-    } catch (error) {
-      set({
-        isLoading: false,
-        error:
-          error.response.data.message || "Error sending reset password email",
-      });
-      throw error;
-    }
-  },
-
   // password reset
   resetPassword: async (email, password) => {
     set({ isLoading: true, error: null });
@@ -278,10 +261,14 @@ export const useAuthStore = create((set) => ({
 
       return response.data;
     } catch (error) {
+      console.log("ERROR", error);
+      console.log("Response:", error.response);
+      console.log("Data:", error.response?.data);
+
       set({ isLoading: false });
 
       throw (
-        error.response?.data || {
+        error.response?.data ?? {
           message: "Failed to update user",
         }
       );

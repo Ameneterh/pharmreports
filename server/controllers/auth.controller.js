@@ -2,7 +2,6 @@ import bcryptjs from "bcryptjs";
 import crypto from "crypto";
 
 import User from "../models/user.model.js";
-import Business from "../models/business.model.js";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
 import {
   sendHandlerActivationEmail,
@@ -128,6 +127,7 @@ export const updateUser = async (req, res) => {
       "phoneNumber",
       "avatar",
       "isDeleted",
+      "isAdmin",
       "status",
     ];
 

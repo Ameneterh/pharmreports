@@ -13,7 +13,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import MainLayout from "../layout/MainLayout";
-import { useBusinessStore } from "../store/businessStore";
 
 export default function LoginPage() {
   const navigate = useNavigate();

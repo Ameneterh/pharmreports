@@ -57,6 +57,11 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

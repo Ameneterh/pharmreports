@@ -30,9 +30,7 @@ import { Link, useNavigate } from "react-router-dom";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 
 import MainLayout from "../layout/MainLayout";
-import { useBusinessStore } from "../store/businessStore";
 import { useAuthStore } from "../store/authStore";
-// import { useBusinessStore } from "../store/businessStore";
 import { PhoneField } from "../components/Input.jsx";
 
 const fadeInUp = {

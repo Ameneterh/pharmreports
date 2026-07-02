@@ -85,7 +85,7 @@ export default function ReadReport({
                   <span className="font-semibold">
                     {selectedReport?.reporter?.role === "admin"
                       ? "Pharm Mrs"
-                      : user?.role === "pharmacist"
+                      : selectedReport?.reporter?.role === "pharmacist"
                         ? "Pharm"
                         : "Pharm Tech"}
                   </span>{" "}
@@ -238,7 +238,7 @@ export default function ReadReport({
                 // onClick={() => handleOpenModal(business)}
               >
                 <MessageSquareText size={16} />
-                <span className="text-nowrap">Send Report</span>
+                <span className="text-nowrap">Send Comment</span>
               </button>
             </form>
           </div>

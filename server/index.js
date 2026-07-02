@@ -1,12 +1,6 @@
 import authRouter from "./routes/auth.routes.js";
-import clientRouter from "./routes/client.routes.js";
-import businessRouter from "./routes/business.routes.js";
 import contactRouter from "./routes/contact.routes.js ";
 import reportRouter from "./routes/report.routes.js";
-import subscriptionRouter from "./routes/subscription.routes.js";
-// import bidsRouter from "./routes/bids.routes.js";
-// import notificationsRouter from "./routes/notification.route.js";
-// import reviewsRouter from "./routes/reviews.route.js";
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -36,11 +30,8 @@ mongoose
   .catch((error) => console.log(error));
 
 app.use("/server/auth", authRouter);
-app.use("/server/client", clientRouter);
-app.use("/server/business", businessRouter);
 app.use("/server/contact", contactRouter);
 app.use("/server/report", reportRouter);
-app.use("/server/subscription", subscriptionRouter);
 app.use(
   "/server/exports",
   express.static(path.join(process.cwd(), "server/exports")),

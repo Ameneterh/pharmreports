@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import MainLayout from "../layout/MainLayout.jsx";
 import { useAuthStore } from "../store/authStore.js";
-import { useClientStore } from "../store/clientStore.js";
 import OrderedTextarea, {
   Input,
   InvInput,
@@ -29,7 +28,6 @@ import { MdAddBusiness, MdLockReset } from "react-icons/md";
 import { VscPreview } from "react-icons/vsc";
 import { TbReport } from "react-icons/tb";
 import { FaSave } from "react-icons/fa";
-import Counter from "../../../server/models/counter.model.js";
 import { workStations, dutyType, dutyTime } from "../assets/static_assets.js";
 import ReporterDetails from "../components/ReporterDetails.jsx";
 import { useReportsStore } from "../store/reportsStore.js";

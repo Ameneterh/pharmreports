@@ -11,7 +11,6 @@ import { useAuthStore } from "./store/authStore.js";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import UserDashboard from "./pages/UserDashboard.jsx";
 import ContactUs from "./pages/ContactUs.jsx";
-import { useBusinessStore } from "./store/businessStore.js";
 import { useLocation } from "react-router-dom";
 import RegisterUser from "./pages/RegisterUser.jsx";
 

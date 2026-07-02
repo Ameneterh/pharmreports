@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useInvoiceStore } from "../store/invoiceStore";
 import { useAuthStore } from "../store/authStore";
 import { use } from "react";
 import { MdOutlineDriveFileRenameOutline } from "react-icons/md";
@@ -21,17 +20,6 @@ export default function DashUpdatePassword({ setShowUpdatePassword }) {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
-  //   console.log(
-  //     "user: ",
-  //     user._id,
-  //     "old pass: ",
-  //     oldPassword,
-  //     "new pass: ",
-  //     newPassword,
-  //     "confirm pass: ",
-  //     confirmPassword,
-  //   );
 
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();

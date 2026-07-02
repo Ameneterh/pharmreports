@@ -8,7 +8,6 @@ import DashSidebar from "../components/DashSidebar";
 import DashboardComponent from "../components/DashboardComponent";
 import DashUsers from "../components/DashUsers";
 import DashProfile from "../components/DashProfile";
-import { useBusinessStore } from "../store/businessStore";
 import SendReport from "./SendReport";
 import DashReports from "../components/DashReports";
 import DashAddUser from "../components/DashAddUser";
@@ -16,7 +15,6 @@ import DashGenerateReport from "../components/DashGenerateReport";
 
 export default function UserDashboard() {
   const { user, logout, isLoading } = useAuthStore();
-  const { business, businessLogout } = useBusinessStore();
 
   const location = useLocation();
   const [tab, setTab] = useState("");
