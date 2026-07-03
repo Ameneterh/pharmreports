@@ -122,8 +122,6 @@ export default function DashGenerateReport() {
     // }
   };
 
-  console.log(excelFile);
-
   const selectedReports = reports
     .filter((report) => {
       const search = searchTerm.toLowerCase();

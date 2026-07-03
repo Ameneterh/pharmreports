@@ -6,6 +6,9 @@ const API_URL =
     ? "http://localhost:5000/server/report"
     : "/server/report";
 
+const DOC_URL =
+  import.meta.env.MODE === "development" ? "http://localhost:5000" : "";
+
 axios.defaults.withCredentials = true;
 
 export const useReportsStore = create((set) => ({
@@ -109,7 +112,7 @@ export const useReportsStore = create((set) => ({
         // excelFile: `${process.env.SERVER_URL}/exports/${files.excel}`,
         // wordFile: `${process.env.SERVER_URL}/exports/${files.word}`,
 
-        excelFile: `http://localhost:5000/${files.excel}`,
+        excelFile: `${DOC_URL}/${files.excel}`,
         wordFile: `http://localhost:5000/${files.word}`,
 
         loading: false,
