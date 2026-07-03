@@ -1,6 +1,7 @@
 import React from "react";
 import { HiArrowNarrowUp, HiOutlineUserGroup } from "react-icons/hi";
 import { MdLocalPharmacy } from "react-icons/md";
+import { TbReport, TbReportAnalytics } from "react-icons/tb";
 import { Link } from "react-router-dom";
 
 // total user count component
@@ -75,7 +76,7 @@ export function AdminDashboardReportComponent({
         <div className="">
           <h3 className="text-gray-500 text-md uppercase">{heading}</h3>
         </div>
-        <HiOutlineUserGroup className="bg-teal-600 text-white rounded-full text-[40px] p-2 shadow-lg" />
+        <TbReport className="bg-teal-600 text-white rounded-full text-[40px] p-2 shadow-lg" />
       </div>
       <p className="bg-red-600 w-full h-[1px] mt-2"></p>
       <div className="flex items-center justify-between py-2">
@@ -123,7 +124,7 @@ export function LastWeekReportComponent({
         <div className="">
           <h3 className="text-gray-500 text-md uppercase">{heading}</h3>
         </div>
-        <HiOutlineUserGroup className="bg-teal-600 text-white rounded-full text-[40px] p-2 shadow-lg" />
+        <TbReportAnalytics className="bg-teal-600 text-white rounded-full text-[40px] p-2 shadow-lg" />
       </div>
       <p className="bg-red-600 w-full h-[1px] mt-2"></p>
       <div className="flex items-center justify-between py-2">

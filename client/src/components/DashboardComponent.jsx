@@ -138,12 +138,12 @@ export default function DashboardComponent() {
             />
 
             {/* show total number reports submitted */}
-            <LastWeekReportComponent
-              totalReports={totalReports}
+            {/* <LastWeekReportComponent
+              totalReports={lastWeekReports}
               heading={"this week's reports"}
               reportCount={userCount}
               reportsByRole={reportsByRole}
-            />
+            /> */}
 
             {/* total clients created */}
             {/* <AdminDashboardComponent
