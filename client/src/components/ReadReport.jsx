@@ -188,8 +188,7 @@ export default function ReadReport({
                             <span className="block text-xs">
                               Comment by:{" "}
                               <span className="font-semibold">
-                                {comment?.commentBy?.isAdmin &&
-                                comment?.commentBy?.role === "pharmacist"
+                                {comment?.commentBy?.rank === "Dep Director"
                                   ? "Pharm Mrs"
                                   : comment?.commentBy?.role === "pharmacist"
                                     ? "Pharm"

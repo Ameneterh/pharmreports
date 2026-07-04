@@ -153,6 +153,7 @@ export default function DashAddUser() {
                     Pharmacy Technician
                   </option>
                   <option value="Senior Pharm Tech">Senior Pharm Tech</option>
+                  <option value="Intern Pharmacist">Intern Pharmacist</option>
                   <option value="Pharmacist 1">Pharmacist 1</option>
                   <option value="Senior Pharmacist">Senior Pharmacist</option>
                   <option value="Principal Pharmacist">

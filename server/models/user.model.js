@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema(
     usernameLower: {
       type: String,
       required: true,
+      trim: true,
       unique: true,
       index: true,
     },
@@ -31,12 +32,14 @@ const userSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
       unique: true,
+      trim: true,
       // sparse: true,
     },
 
     password: {
       type: String,
       required: true,
+      trim: true,
       minlength: 8,
     },
 
@@ -72,6 +75,7 @@ const userSchema = new mongoose.Schema(
       enum: [
         "Pharmacy Technician",
         "Senior Pharm Tech",
+        "Intern Pharmacist",
         "Pharmacist 1",
         "Senior Pharmacist",
         "Principal Pharmacist",

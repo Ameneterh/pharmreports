@@ -47,26 +47,6 @@ export default function SendReport() {
 
   const [formData, setFormData] = useState({});
 
-  const getRegisteredClients = async () => {
-    try {
-      const { clients } = await getAllClients();
-      const filteredClients = clients.filter(
-        (client) => user?.business._id === client?.staff?.business._id,
-      );
-      setClients(filteredClients);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (user?.fullname === undefined) {
-      navigate("/add-handler");
-    }
-    getRegisteredClients();
-    // getInvoices();
-  }, []);
-
   // save invoice
   const saveReport = async () => {
     try {
