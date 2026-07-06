@@ -83,7 +83,8 @@ export default function ReadReport({
                 Reporter:{" "}
                 <span className="font-semibold flex items-center gap-1">
                   <span className="font-semibold">
-                    {selectedReport?.reporter?.role === "admin"
+                    {selectedReport?.reporter?.role === "pharmacist" &&
+                    selectedReport?.reporter?.rank === "Dep Director"
                       ? "Pharm Mrs"
                       : selectedReport?.reporter?.role === "pharmacist"
                         ? "Pharm"
@@ -105,6 +106,30 @@ export default function ReadReport({
                 <span className="font-semibold">
                   {selectedReport?.dutyType}
                 </span>
+                {selectedReport?.dutyType === "Weekly Report" && (
+                  <span className="text-xs">
+                    from{" "}
+                    {selectedReport?.reportStartDate
+                      ? new Date(
+                          selectedReport?.reportStartDate,
+                        ).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })
+                      : ""}{" "}
+                    to{" "}
+                    {selectedReport?.reportEndDate
+                      ? new Date(
+                          selectedReport?.reportEndDate,
+                        ).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })
+                      : ""}
+                  </span>
+                )}
               </p>
               <p className="flex items-center gap-1">
                 Time of Duty:{" "}

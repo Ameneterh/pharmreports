@@ -34,7 +34,7 @@ import { useReportsStore } from "../store/reportsStore.js";
 
 export default function SendReport() {
   const { user } = useAuthStore();
-  const { sendReport } = useReportsStore();
+  const { sendReport, isLoading } = useReportsStore();
   // const { createInvoice, getAllInvoices } = useInvoiceStore();
 
   const navigate = useNavigate();
@@ -54,6 +54,8 @@ export default function SendReport() {
         workStation: formData.workStation,
         dutyType: formData.dutyType,
         timeOfDuty: formData.timeOfDuty,
+        reportStartDate: formData.reportStartDate,
+        reportEndDate: formData.reportEndDate,
         dutyDateTime: formData.dutyDateTime,
         dutiesDone: formData.dutiesDone,
         challenges: formData.challenges,
@@ -147,6 +149,7 @@ export default function SendReport() {
               <Button
                 className="bg-blue-600 text-white hover:bg-opacity-70 px-8 py-1 rounded flex items-center gap-2"
                 onClick={saveReport}
+                disabled={isLoading}
               >
                 <FaCloudDownloadAlt className="text-xl mr-2" />
                 Send Report
@@ -209,6 +212,9 @@ export default function SendReport() {
                         className="w-full sm:w-1/4 pl-3 pr-3 py-2 rounded-lg border border-gray-700 placeholder-gray-400 transition duration-200 flex-1 text-xs"
                       >
                         <option>Select Duty Type</option>
+                        {formData.workStation === "Renal Pharmacy" && (
+                          <option value={"Weekly Report"}>Weekly Report</option>
+                        )}
                         {dutyType &&
                           dutyType.map((duty) => {
                             return (
@@ -219,6 +225,49 @@ export default function SendReport() {
                           })}
                       </select>
                     </div>
+
+                    {/* choose week duration */}
+                    {formData?.dutyType === "Weekly Report" && (
+                      <div className="flex gap-3 items-center w-full">
+                        {/* Start of report week */}
+                        <div className="flex flex-col sm:flex-row gap-3 relative w-full">
+                          <p className="text-xs bg-white font-semibold absolute -top-2 left-2 px-1 flex items-center gap-[2px]">
+                            <span className="text-red-600 font-bold">*</span>
+                            From:
+                          </p>
+                          <input
+                            type="date"
+                            defaultValue={formData.reportStartDate}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                reportStartDate: e.target.value,
+                              })
+                            }
+                            className="w-full sm:w-1/4 pl-3 pr-3 py-2 rounded-lg border border-gray-700 placeholder-gray-400 transition duration-200 flex-1 text-xs"
+                          />
+                        </div>
+
+                        {/* to end of report date */}
+                        <div className="flex flex-col sm:flex-row gap-3 relative w-full">
+                          <p className="text-xs bg-white font-semibold absolute -top-2 left-2 px-1 flex items-center gap-[2px]">
+                            <span className="text-red-600 font-bold">*</span>
+                            To:
+                          </p>
+                          <input
+                            type="date"
+                            defaultValue={formData.reportEndDate}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                reportEndDate: e.target.value,
+                              })
+                            }
+                            className="w-full sm:w-1/4 pl-3 pr-3 py-2 rounded-lg border border-gray-700 placeholder-gray-400 transition duration-200 flex-1 text-xs"
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-3 items-center w-full mb-3">

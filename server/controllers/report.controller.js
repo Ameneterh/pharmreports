@@ -13,6 +13,8 @@ export const sendReport = async (req, res) => {
       workStation,
       dutyType,
       timeOfDuty,
+      reportStartDate,
+      reportEndDate,
       dutyDateTime,
       dutiesDone,
       challenges,
@@ -74,6 +76,8 @@ export const sendReport = async (req, res) => {
       workStation,
       dutyType,
       timeOfDuty,
+      reportStartDate,
+      reportEndDate,
       dutyDateTime,
       dutiesDone,
       challenges,
@@ -460,7 +464,7 @@ export const getWeeklySummary = async (req, res) => {
 
       if (
         report.interventions &&
-        !/^(nil|none|n\/a|na|no|no intervention|no interventions|not applicable|-|0)$/i.test(
+        !/^(nil|nill|none|n\/a|na|no|no intervention|no interventions|not applicable|-|0)$/i.test(
           report.interventions.trim(),
         ) &&
         report.interventions.toLowerCase() //.includes("interventions")

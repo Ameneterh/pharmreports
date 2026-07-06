@@ -14,6 +14,14 @@ const reportSchema = new mongoose.Schema(
       trim: true,
     },
 
+    reportStartDate: {
+      type: Date,
+    },
+
+    reportEndDate: {
+      type: Date,
+    },
+
     timeOfDuty: {
       type: String,
       required: true,

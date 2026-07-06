@@ -9,7 +9,7 @@ export default function ReporterDetails({ user, formData }) {
         Reporter:{" "}
         <span className="font-semibold flex items-center gap-1">
           <span className="font-semibold">
-            {user?.role === "admin"
+            {user?.role === "pharmacist" && user?.rank === "Dep Director"
               ? "Pharm Mrs"
               : user?.role === "pharmacist"
                 ? "Pharm"
@@ -23,7 +23,12 @@ export default function ReporterDetails({ user, formData }) {
         <span className="font-semibold">{formData?.workStation}</span>
       </p>
       <p className="flex items-center gap-1">
-        Duty Type: <span className="font-semibold">{formData?.dutyType}</span>
+        Duty Type: <span className="font-semibold">{formData?.dutyType}</span>{" "}
+        {formData?.dutyType === "Weekly Report" && (
+          <span className="text-xs">
+            from {formData?.reportStartDate} to {formData?.reportEndDate}
+          </span>
+        )}
       </p>
       <p className="flex items-center gap-1">
         Time of Duty:{" "}
