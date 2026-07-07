@@ -92,7 +92,7 @@ export default function HeaderComponent({ business }) {
     <header className="w-full px-5 md:px-20 py-2 sm:py-4 bg-blue-900 shadow fixed left-0 top-0 flex items-center justify-between z-50">
       <Link to="/">
         <div className="text-white flex items-center gap-1 max-h-14 overflow-hidden rounded-md">
-          <img src={logo} alt="" className="w-14" />
+          <img src={logo} alt="" className="w-10 md:w-14" />
 
           <p className="hidden sm:inline-block text-2xl ml-3">
             <span className="font-extrabold">AMSH Pharma</span>
@@ -128,10 +128,13 @@ export default function HeaderComponent({ business }) {
         {user ? (
           <div className="bg-white px-2 py-1 rounded flex items-center gap-2">
             <Link
-              to={"/user-dashboard?tab=profile"}
-              className="flex items-center"
+              to={"/user-dashboard?tab=notifications"}
+              className="flex items-center relative"
             >
               <img src={user.avatar} className="rounded-full h-8 w-8" />
+              <div className="p-2 rounded-full bg-red-600 absolute top-1 right-1 flex items-center justify-center text-white text-xs w-4 h-4">
+                10
+              </div>
             </Link>
             <p className="font-bold text-md text-blue-800">
               <Link

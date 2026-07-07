@@ -11,6 +11,7 @@ import {
   MdOutlineCreateNewFolder,
   MdAddBusiness,
   MdBusiness,
+  MdOutlineNotificationsActive,
 } from "react-icons/md";
 import { TbReportAnalytics } from "react-icons/tb";
 import { FaRegAddressBook } from "react-icons/fa";
@@ -60,12 +61,22 @@ export default function DashSidebar() {
                     <span className="text-nowrap bg-gray-600 text-white px-2 py-[6px] rounded-md text-xs capitalize">
                       {user.rank
                         .split(" ")
-                        .map((word) => word.slice(0, 4))
+                        .map((word) => word.slice(0, 5))
                         .join(" ")}
                     </span>
                   }
                 >
                   Profile
+                </Sidebar.Item>
+              </Link>
+
+              <Link to="/user-dashboard?tab=notifications">
+                <Sidebar.Item
+                  active={tab === "notifications"}
+                  icon={MdOutlineNotificationsActive}
+                  as="div"
+                >
+                  Nofications
                 </Sidebar.Item>
               </Link>
 

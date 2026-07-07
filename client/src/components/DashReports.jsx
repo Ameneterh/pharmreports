@@ -17,6 +17,8 @@ import {
   MailOpen,
   MessageSquareText,
   ScanText,
+  StepForward,
+  StepBack,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
@@ -68,6 +70,8 @@ export default function DashReports() {
 
   // others
   const [reports, setReports] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(10);
+  const [startIndex, setStartIndex] = useState(0);
   const [startDate, setStartDate] = useState(getLastSunday());
   const [endDate, setEndDate] = useState(
     new Date().toISOString().split("T")[0],
@@ -83,6 +87,8 @@ export default function DashReports() {
     try {
       const { reports } = await getAllReports({ startDate, endDate });
       setReports(reports);
+      setStartIndex(0);
+      setVisibleCount(10);
 
       return reports;
     } catch (error) {
@@ -114,19 +120,13 @@ export default function DashReports() {
   };
 
   const handleShowMore = async () => {
-    // const startIndex = users.length;
-    // try {
-    //   const res = await fetch(`/api/user/getusers?startIndex=${startIndex}`);
-    //   const data = await res.json();
-    //   if (res.ok) {
-    //     setUsers((prev) => [...prev, ...data.users]);
-    //     if (data.users.length < 10) {
-    //       setShowMore(false);
-    //     }
-    //   }
-    // } catch (error) {
-    //   console.log(error.message);
-    // }
+    setStartIndex((prev) => prev + 10);
+    setVisibleCount((prev) => prev + 10);
+  };
+
+  const handleShowLess = async () => {
+    setStartIndex((prev) => prev - 10);
+    setVisibleCount((prev) => prev - 10);
   };
 
   const handleDeleteUser = async () => {
@@ -285,123 +285,167 @@ export default function DashReports() {
           className="w-full md:mx-auto"
         >
           {selectedReports.length > 0 ? (
-            <table className="border-collapse table-auto mx-auto min-w-full border-none">
-              <thead className=" bg-gray-500">
-                <tr className="border-b-[2px] border-b-black text-sm">
-                  <th className="text-left px-4 py-1 text-nowrap">
-                    Report Date
-                  </th>
-                  <th className="text-left px-4 py-1 text-nowrap">
-                    Created At
-                  </th>
-                  <th className="text-left px-4 py-1 text-nowrap">
-                    Reporter/Work Station Details
-                  </th>
-                  <th className="text-left px-4 py-1 text-nowrap">Comments</th>
-                  <th className="text-left px-4 py-1 text-nowrap">
-                    Report Details
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody className="">
-                {selectedReports.map((business) => (
-                  <tr key={business._id} className="border-b border-b-gray-600">
-                    <td className="px-4 py-1 text-sm align-top">
-                      {business.dutyDateTime
-                        ? new Date(business.dutyDateTime).toLocaleString(
-                            "en-US",
-                            {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                              // hour: "numeric",
-                              // minute: "2-digit",
-                              // hour12: true,
-                            },
-                          )
-                        : ""}
-                    </td>
-                    <td className="px-4 py-1 text-sm align-top">
-                      {business.createdAt
-                        ? new Date(business.createdAt).toLocaleString("en-US", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                            hour: "numeric",
-                            minute: "2-digit",
-                            hour12: true,
-                          })
-                        : ""}
-                    </td>
-                    <td className="px-4 py-1 align-top">
-                      <div className="flex flex-col lg:flex-row items-start gap-2">
-                        <div className="flex flex-col text-sm border-r border-gray-800 pr-2">
-                          <p className="flex items-center gap-1">
-                            <span className="font-semibold flex items-center gap-1">
-                              <span className="font-semibold">
-                                {business?.reporter?.role === "admin"
-                                  ? "Pharm Mrs"
-                                  : business?.reporter?.role === "pharmacist"
-                                    ? "Pharm"
-                                    : "Pharm Tech"}
-                              </span>{" "}
-                              <span className="flex items-center capitalize">
-                                {business?.reporter?.fullname}
-                              </span>
-                            </span>
-                          </p>
-
-                          <span className={`text-sm cursor-pointer`}>
-                            Work Station:{" "}
-                            <span className="capitalize font-bold">
-                              {business.workStation}
-                            </span>
-                          </span>
-                        </div>
-
-                        <div className="flex flex-col text-sm">
-                          <span className={`text-sm cursor-pointer`}>
-                            Duty Type:{" "}
-                            <span className="capitalize font-bold">
-                              {business.dutyType}
-                            </span>
-                          </span>
-                          <span className={`text-sm cursor-pointer`}>
-                            Time of Duty:{" "}
-                            <span className="capitalize font-bold">
-                              {business.timeOfDuty}
-                            </span>
-                          </span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="flex items-center gap-1">
-                        <MessageSquareText size={16} />
-                        <span>{business?.comments?.length}</span>
-                        <span className="text-xs">
-                          {business?.comments?.length === 1
-                            ? "comment"
-                            : "comments"}
-                        </span>
-                      </div>
-                      {}
-                    </td>
-
-                    <td className="flex items-center gap-2 px-4 py-1 text-sm capitalize align-top">
-                      <span
-                        className="flex items-center gap-2 px-2 py-1 bg-blue-700 text-white rounded cursor-pointer w-fit hover:scale-110 hover:bg-blue-900 transition-all duration-300"
-                        title="Read Report"
-                        onClick={() => handleOpenModal(business)}
-                      >
-                        <MailOpen size={16} />
-                      </span>
-                    </td>
+            <>
+              <table className="border-collapse table-auto mx-auto min-w-full border-none">
+                <thead className=" bg-gray-500">
+                  <tr className="border-b-[2px] border-b-black text-sm">
+                    <th className="text-left px-4 py-1 text-nowrap">
+                      Report Date
+                    </th>
+                    <th className="text-left px-4 py-1 text-nowrap">
+                      Created At
+                    </th>
+                    <th className="text-left px-4 py-1 text-nowrap">
+                      Reporter/Work Station Details
+                    </th>
+                    <th className="text-left px-4 py-1 text-nowrap">
+                      Comments
+                    </th>
+                    <th className="text-left px-4 py-1 text-nowrap">
+                      Report Details
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+
+                <tbody className="">
+                  {selectedReports
+                    .slice(startIndex, visibleCount)
+                    .map((business) => (
+                      <tr
+                        key={business._id}
+                        className="border-b border-b-gray-600"
+                      >
+                        <td className="px-4 py-1 text-sm align-top">
+                          {business.dutyDateTime
+                            ? new Date(business.dutyDateTime).toLocaleString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                  // hour: "numeric",
+                                  // minute: "2-digit",
+                                  // hour12: true,
+                                },
+                              )
+                            : ""}
+                        </td>
+                        <td className="px-4 py-1 text-sm align-top">
+                          {business.createdAt
+                            ? new Date(business.createdAt).toLocaleString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                  hour: "numeric",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                },
+                              )
+                            : ""}
+                        </td>
+                        <td className="px-4 py-1 align-top">
+                          <div className="flex flex-col lg:flex-row items-start gap-2">
+                            <div className="flex flex-col text-sm border-r border-gray-800 pr-2">
+                              <p className="flex items-center gap-1">
+                                <span className="font-semibold flex items-center gap-1 text-nowrap line-clamp-1">
+                                  <span className="font-semibold">
+                                    {business?.reporter?.role === "admin"
+                                      ? "Pharm Mrs"
+                                      : business?.reporter?.role ===
+                                          "pharmacist"
+                                        ? "Pharm"
+                                        : "Pharm Tech"}
+                                  </span>{" "}
+                                  <span className="flex items-center capitalize">
+                                    {business?.reporter?.fullname}
+                                  </span>
+                                </span>
+                              </p>
+
+                              <span className={`text-sm cursor-pointer`}>
+                                Work Station:{" "}
+                                <span className="capitalize font-bold">
+                                  {business.workStation}
+                                </span>
+                              </span>
+                            </div>
+
+                            <div className="flex flex-col text-sm">
+                              <span className={`text-sm cursor-pointer`}>
+                                Duty Type:{" "}
+                                <span className="capitalize font-bold">
+                                  {business.dutyType}
+                                </span>
+                              </span>
+                              <span className={`text-sm cursor-pointer`}>
+                                Time of Duty:{" "}
+                                <span className="capitalize font-bold">
+                                  {business.timeOfDuty}
+                                </span>
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="flex items-center gap-1">
+                            <MessageSquareText size={16} />
+                            <span>{business?.comments?.length}</span>
+                            <span className="text-xs">
+                              {business?.comments?.length === 1
+                                ? "comment"
+                                : "comments"}
+                            </span>
+                          </div>
+                          {}
+                        </td>
+
+                        <td className="flex items-center gap-2 px-4 py-1 text-sm capitalize align-top">
+                          <span
+                            className="flex items-center gap-2 px-2 py-1 bg-blue-700 text-white rounded cursor-pointer w-fit hover:scale-110 hover:bg-blue-900 transition-all duration-300"
+                            title="Read Report"
+                            onClick={() => handleOpenModal(business)}
+                          >
+                            <MailOpen size={16} />
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+              <div className="flex justify-center items-center gap-4 mt-4 text-sm">
+                {startIndex > 0 && (
+                  // previous button
+                  <button
+                    onClick={() => handleShowLess()}
+                    className="px-4 py-1 flex items-center"
+                  >
+                    <StepBack size={16} />
+                    Prev
+                  </button>
+                )}
+
+                {/* page info // numbering */}
+                <p className="flex items-center gap-1">
+                  {startIndex + 1} -{" "}
+                  {visibleCount < selectedReports.length
+                    ? visibleCount
+                    : selectedReports.length}{" "}
+                  of {selectedReports.length}
+                </p>
+
+                {/* next button */}
+                {visibleCount < selectedReports.length && (
+                  <button
+                    onClick={() => handleShowMore()}
+                    className="px-4 py-1 flex items-center"
+                  >
+                    Next <StepForward size={16} />
+                  </button>
+                )}
+              </div>
+            </>
           ) : (
             <p>No Reports found.</p>
           )}
