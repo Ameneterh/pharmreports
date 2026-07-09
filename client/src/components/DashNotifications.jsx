@@ -14,9 +14,10 @@ import AdminDashboardComponent, {
 } from "./AdminDashboardComponent";
 import { UserDashboardComponents } from "./AdminDashboardComponent";
 import Divider from "./Divider";
-import { useReportsStore } from "../store/reportsStore";
-import ReadReport from "./ReadReport";
-import { BellPlus, Loader } from "lucide-react";
+import { BellPlus, Check, Loader, X } from "lucide-react";
+import { useNotificationStore } from "../store/notificationStore";
+import toast from "react-hot-toast";
+import ReadNotification from "./ReadNotification";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -32,28 +33,21 @@ const fadeInUp = {
 };
 
 export default function DashNotifications() {
-  const getLastSunday = () => {
-    const today = new Date();
-    const day = today.getDay(); // Sunday = 0, Monday = 1, ... Saturday = 6
-
-    const lastSunday = new Date(today);
-    lastSunday.setDate(today.getDate() - day);
-    lastSunday.setHours(0, 0, 0, 0);
-
-    return lastSunday.toISOString().split("T")[0];
-  };
-
   const { user } = useAuthStore();
-  const { getAllUsers, isLoading } = useAuthStore();
-  const { getAllReports } = useReportsStore();
+  const { sendNotification, readNotification, getAllNotifications, isLoading } =
+    useNotificationStore();
 
-  const [formData, setFormData] = useState({});
-
+  const [formData, setFormData] = useState({
+    title: "",
+    content: "",
+    remarks: "",
+  });
+  const [notifications, setNotifications] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedReport, setSelectedReport] = useState(null);
+  const [selectedNotification, setSelectedNotification] = useState(null);
 
-  const handleOpenModal = (report) => {
-    setSelectedReport(report);
+  const handleOpenModal = (notification) => {
+    setSelectedNotification(notification);
     setShowModal(true);
   };
 
@@ -61,70 +55,54 @@ export default function DashNotifications() {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  // for users
-  const [users, setUsers] = useState([]);
-  const [totalUsers, setTotalUsers] = useState(0);
-  const [lastMonthUsers, setLastMonthUsers] = useState(0);
-  const [userCount, setUserCount] = useState(0);
-
-  // for reports
-  const [reports, setReports] = useState([]);
-  const [totalReports, setTotalReports] = useState(0);
-  const [lastMonthReports, setLastMonthReports] = useState(0);
-  const [lastWeekReports, setLastWeekReports] = useState(0);
-  const [reportCount, setReportCount] = useState(0);
-  const [reportsByRole, setReportsByRole] = useState(0);
-
-  // get users
-  const getUsers = async () => {
+  const getNotifications = async () => {
     try {
-      const { users, totalUsers, lastMonthUsers, userCounts } =
-        await getAllUsers();
-      setUsers(users);
-      setTotalUsers(totalUsers);
-      setLastMonthUsers(lastMonthUsers);
-      setUserCount(userCounts);
+      const { notifications } = await getAllNotifications();
+      setNotifications(notifications.notifications);
+      return notifications;
     } catch (error) {
       console.log(error);
-    }
-  };
-
-  // get users
-  const getReports = async ({
-    startDate = new Date(getLastSunday()),
-    endDate = new Date(),
-  } = {}) => {
-    try {
-      const {
-        reports,
-        totalReports,
-        // lastMonthReports,
-        lastWeekReports,
-        reportCounts,
-        reportsByRole,
-      } = await getAllReports({ startDate, endDate });
-      setReports(reports);
-      setTotalReports(totalReports);
-      // setLastMonthReports(lastMonthReports);
-      setLastWeekReports(lastWeekReports);
-      setReportCount(reportCounts);
-      setReportsByRole(reportsByRole);
-    } catch (error) {
-      console.log(error);
+      return [];
     }
   };
 
   useEffect(() => {
-    if (user.role === "architect" || user.isAdmin) {
-      getUsers();
-    }
-    getReports();
+    getNotifications();
   }, [user._id]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    alert("Sending Notification!");
+    try {
+      await sendNotification({
+        title: formData.title,
+        content: formData.content,
+        remarks: formData.remarks,
+        notificationBy: user._id,
+      });
+      setFormData({
+        title: "",
+        content: "",
+        remarks: "",
+      });
+      getNotifications();
+      toast.success("New notification sent successfully!");
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to send notification.");
+    }
+  };
+
+  const handleReadNotification = async (id) => {
+    try {
+      await readNotification({ id, user });
+      getNotifications();
+      toast.success("Notification read successfully!");
+      setShowModal(false);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to mark notification as read.");
+    }
   };
 
   return (
@@ -143,7 +121,7 @@ export default function DashNotifications() {
           variants={fadeInUp}
           initial="hidden"
           animate="visible"
-          className="w-full max-w-96 max-h-fit bg-white rounded-md shadow-md shadow-slate-400 border p-3"
+          className="bg-opacity-40 w-full max-w-96 max-h-fit bg-white rounded-md shadow-md shadow-slate-400 border p-3"
         >
           <p className="text-lg text-center font-bold text-blue-900">
             Send General Notification
@@ -151,51 +129,52 @@ export default function DashNotifications() {
 
           <form onSubmit={handleSubmit} className="flex flex-col mt-5 gap-5">
             <div className="flex flex-col sm:flex-row gap-3 relative w-full">
-              <p className="text-xs bg-white font-semibold absolute -top-2 left-2 px-1 flex items-center gap-[2px]">
+              <p className="bg-opacity-10 text-xs bg-white font-semibold absolute -top-2 left-2 px-1 flex items-center gap-[2px]">
                 <span className="text-red-600 font-bold">*</span>Title:
               </p>
               <input
-                value={formData.dutiesDone}
+                value={formData.title}
                 onChange={(e) =>
-                  setFormData({ ...formData, dutiesDone: e.target.value })
+                  setFormData({ ...formData, title: e.target.value })
                 }
                 rows={10}
                 placeholder="Enter description..."
-                className="w-full sm:w-1/4 pl-3 pr-3 py-2 border border-t-transparent border-l-transparent border-r-transparent placeholder-gray-400 transition duration-200 flex-1 text-xs focus:border-transparent focus:ring-0 focus:outline-none focus:border-b-red-600"
+                className="bg-white bg-opacity-5 w-full sm:w-1/4 pl-3 pr-3 py-2 border border-t-transparent border-l-transparent border-r-transparent placeholder-gray-400 transition duration-200 flex-1 text-xs focus:border-transparent focus:ring-0 focus:outline-none focus:border-b-red-600 border-b-gray-800"
               />
             </div>
             <div className="flex flex-col sm:flex-row gap-3 relative w-full">
-              <p className="text-xs bg-white font-semibold absolute -top-2 left-2 px-1 flex items-center gap-[2px]">
+              <p className="bg-opacity-10 text-xs bg-white font-semibold absolute -top-2 left-2 px-1 flex items-center gap-[2px]">
                 <span className="text-red-600 font-bold">*</span>Content:
               </p>
               <textarea
-                value={formData.dutiesDone}
+                value={formData.content}
                 onChange={(e) =>
-                  setFormData({ ...formData, dutiesDone: e.target.value })
+                  setFormData({ ...formData, content: e.target.value })
                 }
                 rows={10}
                 placeholder="Enter description..."
-                className="w-full sm:w-1/4 pl-3 pr-3 py-2 border border-t-transparent border-l-transparent border-r-transparent placeholder-gray-400 transition duration-200 flex-1 text-xs focus:border-transparent focus:ring-0 focus:outline-none focus:border-b-red-600"
+                className="bg-white bg-opacity-5 w-full sm:w-1/4 pl-3 pr-3 py-2 border border-t-transparent border-l-transparent border-r-transparent placeholder-gray-400 transition duration-200 flex-1 text-xs focus:border-transparent focus:ring-0 focus:outline-none focus:border-b-red-600 border-b-gray-800"
               />
             </div>
             <div className="flex flex-col sm:flex-row gap-3 relative w-full">
-              <p className="text-xs bg-white font-semibold absolute -top-2 left-2 px-1 flex items-center gap-[2px]">
+              <p className="bg-opacity-10 text-xs bg-white font-semibold absolute -top-2 left-2 px-1 flex items-center gap-[2px]">
                 Remarks (optional):
               </p>
               <textarea
-                value={formData.dutiesDone}
+                value={formData.remarks}
                 onChange={(e) =>
-                  setFormData({ ...formData, dutiesDone: e.target.value })
+                  setFormData({ ...formData, remarks: e.target.value })
                 }
                 rows={10}
                 placeholder="Enter description..."
-                className="w-full sm:w-1/4 pl-3 pr-3 py-2 border border-t-transparent border-l-transparent border-r-transparent placeholder-gray-400 transition duration-200 flex-1 text-xs focus:border-transparent focus:ring-0 focus:outline-none focus:border-b-red-600"
+                className="bg-white bg-opacity-5 w-full sm:w-1/4 pl-3 pr-3 py-2 border border-t-transparent border-l-transparent border-r-transparent placeholder-gray-400 transition duration-200 flex-1 text-xs focus:border-transparent focus:ring-0 focus:outline-none focus:border-b-red-600 border-b-gray-800"
               />
             </div>
 
             <button
               type="submit"
               className="flex items-center gap-2 text-xs bg-blue-700 hover:bg-opacity-90 rounded px-3 py-2 text-white max-w-fit"
+              disabled={isLoading}
             >
               {isLoading ? (
                 <span className="flex items-center gap-1">
@@ -221,66 +200,46 @@ export default function DashNotifications() {
           initial="hidden"
           animate="visible"
           className="w-full md:mx-auto col-span-2"
-          //   className="w-full table-auto overflow-x-scroll scrollbar scrollbar-track-transparent scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500 flex gap-5 col-span-2"
         >
           <div className="flex flex-col gap-2">
-            <p className="text-lg font-semibold text-gray-700">
+            <p className="text-lg font-semibold text-gray-900">
               Recent Notifications
             </p>
-            {reports.length > 0 ? (
+            {notifications?.length > 0 ? (
               <table className="border-collapse table-auto mx-auto min-w-full border-none overflow-x-scroll scrollbar scrollbar-track-transparent scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
-                {/* <thead className=" bg-gray-500">
-                  <tr className="border-b-[2px] border-b-black text-sm">
-                    <th className="text-left px-4 py-1 text-nowrap">
-                      Report Date
-                    </th>
-                    <th className="text-left px-4 py-1 text-nowrap">
-                      Reporter
-                    </th>
-                    <th className="text-left px-4 py-1 text-nowrap">
-                      Duty Details
-                    </th>
-                    <th className="text-left px-4 py-1 text-nowrap">Station</th>
-                    <th className="text-left px-4 py-1 text-nowrap">Actions</th>
-                  </tr>
-                </thead> */}
-
                 <tbody className="">
-                  {reports.slice(0, 10).map((business) => (
+                  {notifications?.slice(0, 10).map((notification) => (
                     <tr
-                      key={business._id}
+                      key={notification?._id}
                       className="border-b border-b-gray-600"
                     >
-                      <td className="px-4 py-1 text-xs align-top">
+                      <td className="py-1 text-xs align-top">
                         <div className="flex-col md:flex-row items-center gap-1">
-                          <div className="flex flex-col md:flex-row items-center gap-1">
-                            {business.dutyDateTime
-                              ? new Date(business.dutyDateTime).toLocaleString(
-                                  "en-US",
-                                  {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                    // hour: "numeric",
-                                    // minute: "2-digit",
-                                    // hour12: true,
-                                  },
-                                )
+                          <div className="flex items-start md:items-center gap-1">
+                            {notification?.createdAt
+                              ? new Date(
+                                  notification?.createdAt,
+                                ).toLocaleString("en-US", {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                })
                               : ""}
                             <div className="flex items-start gap-2 text-nowrap">
                               <div className="flex flex-col">
                                 <p className="flex items-center gap-1">
                                   <span className="font-semibold flex items-center gap-1">
                                     <span className="font-semibold">
-                                      {business?.reporter?.rank === "admin"
+                                      {notification?.notificationBy?.rank ===
+                                      "admin"
                                         ? "Pharm Mrs"
-                                        : business?.reporter?.role ===
+                                        : notification?.notificationBy?.role ===
                                             "pharmacist"
                                           ? "Pharm"
                                           : "Pharm Tech"}
                                     </span>{" "}
                                     <span className="flex items-center capitalize">
-                                      {business?.reporter?.fullname}
+                                      {notification?.notificationBy?.fullname}
                                     </span>
                                   </span>
                                 </p>
@@ -289,7 +248,20 @@ export default function DashNotifications() {
                           </div>
 
                           <p className="px-4 py-1 align-top line-clamp-2">
-                            {business.dutiesDone}
+                            <span className="font-semibold block">
+                              <span className="flex items-center gap-1">
+                                {notification?.readBy?.some(
+                                  (item) => item.reader._id === user._id,
+                                ) ? (
+                                  <Check size={16} className="text-blue-700" />
+                                ) : (
+                                  <X size={16} className="text-red-700" />
+                                )}
+
+                                {notification?.title}
+                              </span>
+                            </span>
+                            {notification?.content}
                           </p>
                         </div>
                       </td>
@@ -297,7 +269,7 @@ export default function DashNotifications() {
                       <td className="px-4 py-1 text-sm capitalize align-top">
                         <span
                           className="flex items-center gap-2 text-blue-700 rounded cursor-pointer w-fit hover:scale-110 transition-all duration-300 hover:underline underline-offset-2"
-                          onClick={() => handleOpenModal(business)}
+                          onClick={() => handleOpenModal(notification)}
                         >
                           Read
                         </span>
@@ -307,7 +279,7 @@ export default function DashNotifications() {
                 </tbody>
               </table>
             ) : (
-              <p>No Reports found.</p>
+              <p>No new notifications found!</p>
             )}
           </div>
         </motion.div>
@@ -315,10 +287,11 @@ export default function DashNotifications() {
 
       {/* modal to update user status */}
       {showModal && (
-        <ReadReport
-          selectedReport={selectedReport}
+        <ReadNotification
+          selectedNotification={selectedNotification}
           showModal={showModal}
           setShowModal={setShowModal}
+          handleReadNotification={handleReadNotification}
         />
       )}
     </div>

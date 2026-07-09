@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
@@ -31,6 +31,7 @@ import { IoMdCloseCircle } from "react-icons/io";
 import { TbMessage, TbStarFilled } from "react-icons/tb";
 import { Input } from "./Input";
 import { useReportsStore } from "../store/reportsStore";
+import { useNotificationStore } from "../store/notificationStore";
 
 export default function HeaderComponent({ business }) {
   const menuItems = [
@@ -60,11 +61,12 @@ export default function HeaderComponent({ business }) {
   const [showNav, setShowNav] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-  const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [notifications, setNotifications] = useState([]);
 
   const { error, isLoading, logout, user } = useAuthStore();
-  const { sendReport, getRatings } = useReportsStore();
+  const { getAllNotifications, readNotification, unreadCount } =
+    useNotificationStore();
 
   const confirmLogout = () => {
     try {
@@ -76,17 +78,20 @@ export default function HeaderComponent({ business }) {
     }
   };
 
-  const submitRating = async (e) => {
-    e.preventDefault();
-
+  const getNotifications = async () => {
     try {
-      await addRating({ rating, comment, rater: user._id });
+      const { notifications } = await getAllNotifications();
+      setNotifications(notifications);
+      return notifications;
     } catch (error) {
       console.log(error);
-    } finally {
-      confirmLogout();
+      return [];
     }
   };
+
+  useEffect(() => {
+    getNotifications();
+  }, [user?._id]);
 
   return (
     <header className="w-full px-5 md:px-20 py-2 sm:py-4 bg-blue-900 shadow fixed left-0 top-0 flex items-center justify-between z-50">
@@ -132,8 +137,8 @@ export default function HeaderComponent({ business }) {
               className="flex items-center relative"
             >
               <img src={user.avatar} className="rounded-full h-8 w-8" />
-              <div className="p-2 rounded-full bg-red-600 absolute top-1 right-1 flex items-center justify-center text-white text-xs w-4 h-4">
-                10
+              <div className="p-2 rounded-full bg-red-600 absolute top-1 right-1 flex items-center justify-center text-white text-xs w-4 h-4 border border-white">
+                {notifications?.unreadCount || 0}
               </div>
             </Link>
             <p className="font-bold text-md text-blue-800">

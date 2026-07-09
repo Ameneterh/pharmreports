@@ -34,7 +34,7 @@ export default function ReporterDetails({ user, formData }) {
         Time of Duty:{" "}
         <span className="font-semibold">{formData?.timeOfDuty}</span>
         <span>
-          {formData?.timeOfDuty === "Night" ? "8pm - 8am" : "8am - 5pm"}
+          {formData?.timeOfDuty === "Night" ? "5pm - 8am" : "8am - 5pm"}
         </span>
       </p>
       <p className="flex items-center gap-1">

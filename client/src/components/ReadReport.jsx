@@ -138,7 +138,7 @@ export default function ReadReport({
                 </span>
                 <span>
                   {selectedReport?.timeOfDuty === "Night"
-                    ? "8pm - 8am"
+                    ? "5pm - 8am"
                     : "8am - 5pm"}
                 </span>
               </p>

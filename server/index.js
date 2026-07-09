@@ -1,6 +1,7 @@
 import authRouter from "./routes/auth.routes.js";
 import contactRouter from "./routes/contact.routes.js ";
 import reportRouter from "./routes/report.routes.js";
+import notificationRouter from "./routes/notification.routes.js";
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
@@ -29,6 +30,7 @@ mongoose
 app.use("/server/auth", authRouter);
 app.use("/server/contact", contactRouter);
 app.use("/server/report", reportRouter);
+app.use("/server/notification", notificationRouter);
 app.use(
   "/server/exports",
   express.static(path.join(process.cwd(), "server/exports")),

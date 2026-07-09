@@ -10,7 +10,7 @@ export default function PasswordResetPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { resetPassword, error, isLoading, message } = useAuthStore();
@@ -26,7 +26,7 @@ export default function PasswordResetPage() {
       return;
     }
     try {
-      await resetPassword(email, password);
+      await resetPassword(username, password);
 
       toast.success(
         "Password reset successfully, redirecting to login page...",
@@ -58,10 +58,10 @@ export default function PasswordResetPage() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <Input
               icon={Mail}
-              type="email"
-              placeholder="Email Address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              placeholder="User Name"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
             />
             <div className="relative flex items-center w-full">
