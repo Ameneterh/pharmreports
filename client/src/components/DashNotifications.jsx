@@ -117,82 +117,84 @@ export default function DashNotifications() {
         animate="visible"
         className="w-full grid grid-cols-1 md:grid-cols-3 gap-4"
       >
-        <motion.div
-          variants={fadeInUp}
-          initial="hidden"
-          animate="visible"
-          className="bg-opacity-40 w-full max-w-96 max-h-fit bg-white rounded-md shadow-md shadow-slate-400 border p-3"
-        >
-          <p className="text-lg text-center font-bold text-blue-900">
-            Send General Notification
-          </p>
+        {user?.isAdmin === true && (
+          <motion.div
+            variants={fadeInUp}
+            initial="hidden"
+            animate="visible"
+            className="bg-opacity-40 w-full max-w-96 max-h-fit bg-white rounded-md shadow-md shadow-slate-400 border p-3"
+          >
+            <p className="text-lg text-center font-bold text-blue-900">
+              Send General Notification
+            </p>
 
-          <form onSubmit={handleSubmit} className="flex flex-col mt-5 gap-5">
-            <div className="flex flex-col sm:flex-row gap-3 relative w-full">
-              <p className="bg-opacity-10 text-xs bg-white font-semibold absolute -top-2 left-2 px-1 flex items-center gap-[2px]">
-                <span className="text-red-600 font-bold">*</span>Title:
-              </p>
-              <input
-                value={formData.title}
-                onChange={(e) =>
-                  setFormData({ ...formData, title: e.target.value })
-                }
-                rows={10}
-                placeholder="Enter description..."
-                className="bg-white bg-opacity-5 w-full sm:w-1/4 pl-3 pr-3 py-2 border border-t-transparent border-l-transparent border-r-transparent placeholder-gray-400 transition duration-200 flex-1 text-xs focus:border-transparent focus:ring-0 focus:outline-none focus:border-b-red-600 border-b-gray-800"
-              />
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 relative w-full">
-              <p className="bg-opacity-10 text-xs bg-white font-semibold absolute -top-2 left-2 px-1 flex items-center gap-[2px]">
-                <span className="text-red-600 font-bold">*</span>Content:
-              </p>
-              <textarea
-                value={formData.content}
-                onChange={(e) =>
-                  setFormData({ ...formData, content: e.target.value })
-                }
-                rows={10}
-                placeholder="Enter description..."
-                className="bg-white bg-opacity-5 w-full sm:w-1/4 pl-3 pr-3 py-2 border border-t-transparent border-l-transparent border-r-transparent placeholder-gray-400 transition duration-200 flex-1 text-xs focus:border-transparent focus:ring-0 focus:outline-none focus:border-b-red-600 border-b-gray-800"
-              />
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 relative w-full">
-              <p className="bg-opacity-10 text-xs bg-white font-semibold absolute -top-2 left-2 px-1 flex items-center gap-[2px]">
-                Remarks (optional):
-              </p>
-              <textarea
-                value={formData.remarks}
-                onChange={(e) =>
-                  setFormData({ ...formData, remarks: e.target.value })
-                }
-                rows={10}
-                placeholder="Enter description..."
-                className="bg-white bg-opacity-5 w-full sm:w-1/4 pl-3 pr-3 py-2 border border-t-transparent border-l-transparent border-r-transparent placeholder-gray-400 transition duration-200 flex-1 text-xs focus:border-transparent focus:ring-0 focus:outline-none focus:border-b-red-600 border-b-gray-800"
-              />
-            </div>
+            <form onSubmit={handleSubmit} className="flex flex-col mt-5 gap-5">
+              <div className="flex flex-col sm:flex-row gap-3 relative w-full">
+                <p className="bg-opacity-10 text-xs bg-white font-semibold absolute -top-2 left-2 px-1 flex items-center gap-[2px]">
+                  <span className="text-red-600 font-bold">*</span>Title:
+                </p>
+                <input
+                  value={formData.title}
+                  onChange={(e) =>
+                    setFormData({ ...formData, title: e.target.value })
+                  }
+                  rows={10}
+                  placeholder="Enter description..."
+                  className="bg-white bg-opacity-5 w-full sm:w-1/4 pl-3 pr-3 py-2 border border-t-transparent border-l-transparent border-r-transparent placeholder-gray-400 transition duration-200 flex-1 text-xs focus:border-transparent focus:ring-0 focus:outline-none focus:border-b-red-600 border-b-gray-800"
+                />
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 relative w-full">
+                <p className="bg-opacity-10 text-xs bg-white font-semibold absolute -top-2 left-2 px-1 flex items-center gap-[2px]">
+                  <span className="text-red-600 font-bold">*</span>Content:
+                </p>
+                <textarea
+                  value={formData.content}
+                  onChange={(e) =>
+                    setFormData({ ...formData, content: e.target.value })
+                  }
+                  rows={10}
+                  placeholder="Enter description..."
+                  className="bg-white bg-opacity-5 w-full sm:w-1/4 pl-3 pr-3 py-2 border border-t-transparent border-l-transparent border-r-transparent placeholder-gray-400 transition duration-200 flex-1 text-xs focus:border-transparent focus:ring-0 focus:outline-none focus:border-b-red-600 border-b-gray-800"
+                />
+              </div>
+              <div className="flex flex-col sm:flex-row gap-3 relative w-full">
+                <p className="bg-opacity-10 text-xs bg-white font-semibold absolute -top-2 left-2 px-1 flex items-center gap-[2px]">
+                  Remarks (optional):
+                </p>
+                <textarea
+                  value={formData.remarks}
+                  onChange={(e) =>
+                    setFormData({ ...formData, remarks: e.target.value })
+                  }
+                  rows={10}
+                  placeholder="Enter description..."
+                  className="bg-white bg-opacity-5 w-full sm:w-1/4 pl-3 pr-3 py-2 border border-t-transparent border-l-transparent border-r-transparent placeholder-gray-400 transition duration-200 flex-1 text-xs focus:border-transparent focus:ring-0 focus:outline-none focus:border-b-red-600 border-b-gray-800"
+                />
+              </div>
 
-            <button
-              type="submit"
-              className="flex items-center gap-2 text-xs bg-blue-700 hover:bg-opacity-90 rounded px-3 py-2 text-white max-w-fit"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <span className="flex items-center gap-1">
-                  <Loader
-                    size={18}
-                    className="animate-spin mx-auto text-white font-bold"
-                  />
-                  <p>Sending ...</p>
-                </span>
-              ) : (
-                <span className="flex items-center gap-1 text-white">
-                  <BellPlus size={18} className="text-white font-bold" />
-                  <p>Send Notification</p>
-                </span>
-              )}
-            </button>
-          </form>
-        </motion.div>
+              <button
+                type="submit"
+                className="flex items-center gap-2 text-xs bg-blue-700 hover:bg-opacity-90 rounded px-3 py-2 text-white max-w-fit"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="flex items-center gap-1">
+                    <Loader
+                      size={18}
+                      className="animate-spin mx-auto text-white font-bold"
+                    />
+                    <p>Sending ...</p>
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 text-white">
+                    <BellPlus size={18} className="text-white font-bold" />
+                    <p>Send Notification</p>
+                  </span>
+                )}
+              </button>
+            </form>
+          </motion.div>
+        )}
 
         {/* notifications content display */}
         <motion.div
@@ -261,7 +263,28 @@ export default function DashNotifications() {
                                 {notification?.title}
                               </span>
                             </span>
-                            {notification?.content}
+                            <span className="flex flex-col gap-1">
+                              {notification?.content}
+                              {notification?.readBy &&
+                                notification?.readBy.length > 0 && (
+                                  <span className="text-xs text-gray-700 flex items-center gap-1">
+                                    {notification?.readBy?.map((item) => (
+                                      <span
+                                        key={item._id}
+                                        title={item.reader.fullname}
+                                        className="flex items-center font-normal -ml-3 border border-white rounded-full"
+                                      >
+                                        <img
+                                          src={item.reader.avatar}
+                                          className="w-5 h-5 rounded-full"
+                                        />
+                                      </span>
+                                    ))}{" "}
+                                    {notification?.readBy.length} readers have
+                                    read this notification.
+                                  </span>
+                                )}
+                            </span>
                           </p>
                         </div>
                       </td>

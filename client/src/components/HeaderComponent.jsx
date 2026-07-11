@@ -137,7 +137,7 @@ export default function HeaderComponent({ business }) {
               className="flex items-center relative"
             >
               <img src={user.avatar} className="rounded-full h-8 w-8" />
-              <div className="p-2 rounded-full bg-red-600 absolute top-1 right-1 flex items-center justify-center text-white text-xs w-4 h-4 border border-white">
+              <div className="p-2 rounded-full bg-red-600 absolute top-1 left-5 flex items-center justify-center text-white text-xs w-4 h-4 border border-white">
                 {notifications?.unreadCount || 0}
               </div>
             </Link>
