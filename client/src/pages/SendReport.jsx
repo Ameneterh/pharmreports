@@ -119,7 +119,7 @@ export default function SendReport() {
                   </p>
                 </div>
                 <div className="flex flex-col w-full mb-2">
-                  <p className="font-bold">Interventions:</p>
+                  <p className="font-bold">DTPs (Clinical Interventions):</p>
                   <p className="whitespace-pre-line text-sm">
                     {formData.interventions}
                   </p>
@@ -386,7 +386,7 @@ export default function SendReport() {
                   <div className="flex flex-col sm:flex-row gap-3 mt-1 relative w-full">
                     <p className="text-xs bg-white font-semibold absolute -top-2 left-2 px-1 flex items-center gap-[2px]">
                       <span className="text-red-600 font-bold">*</span>
-                      Interventions:
+                      DTPs (Clinical Interventions):
                     </p>
                     <textarea
                       value={formData.interventions}
