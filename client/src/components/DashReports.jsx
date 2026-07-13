@@ -82,6 +82,7 @@ export default function DashReports() {
   const [showReadReportsModal, setShowReadReportsModal] = useState(false);
 
   const [selectedReport, setSelectedReport] = useState(null);
+  const [pdfLoading, setPDFLoading] = useState(false);
 
   const getReports = async ({ startDate, endDate }) => {
     try {
@@ -102,6 +103,7 @@ export default function DashReports() {
   }, [user?._id]);
 
   const generatePDF = async () => {
+    setPDFLoading(true);
     const reports = await getReports({
       startDate,
       endDate,
@@ -110,6 +112,8 @@ export default function DashReports() {
     const blob = await pdf(
       <ReportsPDF reports={reports} startDate={startDate} endDate={endDate} />,
     ).toBlob();
+
+    setPDFLoading(false);
 
     window.open(URL.createObjectURL(blob), "_blank");
   };
@@ -271,10 +275,20 @@ export default function DashReports() {
             // onClick={() => handleOpenReadReportModal({ startDate, endDate })}
             className="flex items-center gap-2 text-xs bg-blue-700 hover:bg-opacity-90 rounded px-3 py-2 text-white"
           >
-            <span className="flex items-center gap-1 text-white">
-              <ScanText size={18} className="text-white font-bold" />
-              <span className="text-nowrap">Read All</span>
-            </span>
+            {pdfLoading ? (
+              <span className="flex items-center gap-1">
+                <Loader
+                  size={18}
+                  className="animate-spin mx-auto text-white font-bold"
+                />
+                <p>Reading ...</p>
+              </span>
+            ) : (
+              <span className="flex items-center gap-1 text-white">
+                <ScanText size={18} className="text-white font-bold" />
+                <span className="text-nowrap">Read All</span>
+              </span>
+            )}
           </button>
         </div>
 

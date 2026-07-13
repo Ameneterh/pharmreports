@@ -60,6 +60,12 @@ const reportSchema = new mongoose.Schema(
       trim: true,
     },
 
+    outOfStock: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
     remarks: {
       type: String,
       trim: true,

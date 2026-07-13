@@ -35,24 +35,12 @@ import { useNotificationStore } from "../store/notificationStore";
 
 export default function HeaderComponent({ business }) {
   const menuItems = [
-    // {
-    //   name: "Login",
-    //   path: "/",
-    //   icon: <MdLogin />,
-    //   isParent: true,
-    // },
     {
       name: "Support",
       path: "/support",
       icon: <MdOutlineContactSupport />,
       isParent: false,
     },
-    // {
-    //   name: "About App",
-    //   path: "/about",
-    //   icon: <FcAbout />,
-    //   isParent: false,
-    // },
   ];
 
   const navigate = useNavigate();
