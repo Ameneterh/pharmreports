@@ -27,7 +27,7 @@ export default function ReadReport({
 }) {
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const { commentReport } = useReportsStore();
+  const { commentReport, isLoading } = useReportsStore();
   const [comment, setComment] = useState("");
 
   const handleSubmit = async (e) => {
@@ -183,7 +183,7 @@ export default function ReadReport({
                   </p>
                 </div>
                 <div className="flex flex-col w-full mb-2">
-                  <p className="font-bold">Interventions:</p>
+                  <p className="font-bold">Medication Reviews:</p>
                   <p className="whitespace-pre-line text-sm">
                     {selectedReport?.interventions}
                   </p>
@@ -259,7 +259,7 @@ export default function ReadReport({
                 type="submit"
                 className="flex items-center gap-2 px-2 py-2 bg-green-700 text-white rounded cursor-pointer w-fit hover:scale-110 hover:bg-green-900 transition-all duration-300"
                 title="Comment on Report"
-                // onClick={() => handleOpenModal(business)}
+                disabled={isLoading}
               >
                 <MessageSquareText size={16} />
                 <span className="text-nowrap">Send Comment</span>

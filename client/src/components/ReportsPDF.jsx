@@ -93,7 +93,7 @@ const ReportsPDF = ({ reports, startDate, endDate }) => {
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.label}>Interventions:</Text>
+            <Text style={styles.label}>Medication Reviews:</Text>
 
             <Text>{report.interventions}</Text>
           </View>

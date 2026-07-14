@@ -119,7 +119,7 @@ export default function SendReport() {
                   </p>
                 </div>
                 <div className="flex flex-col w-full mb-2">
-                  <p className="font-bold">DTPs (Clinical Interventions):</p>
+                  <p className="font-bold">Medication Reviews:</p>
                   <p className="whitespace-pre-line text-sm">
                     {formData.interventions}
                   </p>
@@ -340,7 +340,7 @@ export default function SendReport() {
                         setFormData({ ...formData, dutiesDone: e.target.value })
                       }
                       rows={10}
-                      placeholder="Enter description..."
+                      placeholder="Describe work done ..."
                       className="w-full sm:w-1/4 pl-3 pr-3 py-2 rounded-lg border border-gray-700 placeholder-gray-400 transition duration-200 flex-1 text-xs"
                     />
                   </div>
@@ -386,7 +386,7 @@ export default function SendReport() {
                   <div className="flex flex-col sm:flex-row gap-3 mt-1 relative w-full">
                     <p className="text-xs bg-white font-semibold absolute -top-2 left-2 px-1 flex items-center gap-[2px]">
                       <span className="text-red-600 font-bold">*</span>
-                      DTPs (Clinical Interventions):
+                      Medication Review:
                     </p>
                     <textarea
                       value={formData.interventions}
@@ -397,7 +397,7 @@ export default function SendReport() {
                         })
                       }
                       rows={10}
-                      placeholder="Interventions ..."
+                      placeholder="Medication Reviews ..."
                       className="w-full sm:w-1/4 pl-3 pr-3 py-2 rounded-lg border border-gray-700 placeholder-gray-400 transition duration-200 flex-1 text-xs"
                     />
                   </div>
