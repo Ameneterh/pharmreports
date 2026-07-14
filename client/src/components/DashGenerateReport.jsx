@@ -19,6 +19,7 @@ import { useReportsStore } from "../store/reportsStore";
 import ReadReport from "./ReadReport";
 import { pdf } from "@react-pdf/renderer";
 import ReportsPDF from "./ReportsPDF";
+import Spinner from "./Spinner";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -158,6 +159,8 @@ export default function DashGenerateReport() {
 
       return sortOrder === "asc" ? result : -result;
     });
+
+  if (isLoading) return <Spinner />;
 
   return (
     <div className="w-full table-auto overflow-x-scroll md:mt-4 md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500 flex gap-5 mt-8 sm:mt-0">

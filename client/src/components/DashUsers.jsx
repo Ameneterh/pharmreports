@@ -7,9 +7,10 @@ import { useAuthStore } from "../store/authStore";
 import { Search, Trash2, BadgeCheck, X, Check } from "lucide-react";
 import { Input } from "./Input";
 import { UserFiltersComponent } from "./DashFilterComponent";
+import Spinner from "./Spinner";
 
 export default function DashUsers() {
-  const { user, updateUser, getAllUsers } = useAuthStore();
+  const { user, updateUser, getAllUsers, isLoading } = useAuthStore();
 
   // sorting and filtering states
   const [searchTerm, setSearchTerm] = useState("");
@@ -191,6 +192,8 @@ export default function DashUsers() {
       // setUpdateUserError(data.message);
     }
   };
+
+  if (isLoading) return <Spinner />;
 
   return (
     <div className="w-full table-auto overflow-x-scroll md:mt-4 md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500 flex gap-5 mt-8 sm:mt-0">
