@@ -5,6 +5,55 @@ import dayjs from "../utils/dayjs.js";
 import { generateExcel } from "../utils/generateExcel.js";
 import { generateWord } from "../utils/generateWord.js";
 
+// reuseable filter function
+const isMeaningfulValue = (value) => {
+  if (!value) return false;
+
+  const normalized = value.toString().trim().toLowerCase();
+
+  const invalidPatterns = [
+    "nil",
+    "non",
+    "none",
+    "n/a",
+    "no ",
+    "not applicable",
+    "nill",
+    "no intervention",
+    "no interventions",
+    "na",
+    "nothing",
+    "no observation",
+    "no observations",
+  ];
+
+  return !invalidPatterns.some((pattern) => normalized.includes(pattern));
+};
+// const isMeaningfulValue = (value) => {
+//   if (!value) return false;
+
+//   const normalized = value.toString().trim().toLowerCase();
+
+//   const invalidValues = [
+//     "nil",
+//     "nill",
+//     "none",
+//     "no",
+//     "no intervention",
+//     "no interventions",
+//     "n/a",
+//     "na",
+//     "-",
+//     "--",
+//     "nothing",
+//     "not applicable",
+//     "no observation",
+//     "no observations",
+//   ];
+
+//   return !invalidValues.some((value) => normalized.includes(value));
+// };
+
 // create contact message
 
 export const sendReport = async (req, res) => {
@@ -518,6 +567,93 @@ export const getInvoice = async (req, res) => {
       success: true,
       message: "Invoice fetched successfully",
       invoice,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// get reports by fields
+export const getReportFieldsSummary = async (req, res) => {
+  try {
+    const { startDate, endDate, fields } = req.query;
+
+    if (!fields) {
+      return res.status(400).json({
+        success: false,
+        message: "Fields are required",
+      });
+    }
+
+    const fieldArray = fields.split(",");
+
+    const allowedFields = Object.keys(Report.schema.paths).filter(
+      (key) => Report.schema.paths[key].instance === "String",
+    );
+
+    const validFields = fieldArray.filter((f) => allowedFields.includes(f));
+
+    if (validFields.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No valid fields provided",
+      });
+    }
+
+    const now = new Date();
+
+    let start = startDate ? new Date(startDate) : new Date(now);
+    if (!startDate) {
+      const day = now.getDay();
+      start.setDate(now.getDate() - day);
+    }
+    start.setHours(0, 0, 0, 0);
+
+    let end = endDate ? new Date(endDate) : new Date(now);
+    end.setHours(23, 59, 59, 999);
+
+    const reports = await Report.find({
+      createdAt: {
+        $gte: start,
+        $lte: end,
+      },
+    })
+      .select([...validFields, "workStation", "reporter", "createdAt"])
+      .sort({ createdAt: -1 })
+      .populate("reporter", "fullname");
+
+    // Build response dynamically
+    const result = {};
+
+    validFields.forEach((field) => {
+      result[field] = reports
+        .map((r) => {
+          const value = r[field];
+
+          if (!isMeaningfulValue(value)) return null;
+
+          return {
+            value,
+            workStation: r.workStation,
+            createdAt: r.createdAt,
+            reporter: r.reporter
+              ? {
+                  // id: r.reporter._id,
+                  fullname: r.reporter.fullname,
+                  // role: r.reporter.role,
+                }
+              : null,
+          };
+        })
+        .filter(Boolean);
+    });
+
+    res.status(200).json({
+      success: true,
+      fields: result,
     });
   } catch (error) {
     res.status(500).json({

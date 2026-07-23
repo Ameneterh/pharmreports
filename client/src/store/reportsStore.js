@@ -155,4 +155,27 @@ export const useReportsStore = create((set) => ({
       throw error;
     }
   },
+
+  // get report fields
+  getReportFields: async ({ startDate, endDate, fields }) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await axios.get(`${API_URL}/report-fields`, {
+        params: {
+          startDate,
+          endDate,
+          fields: fields.join(","), // ["interventions","remarks"]
+        },
+      });
+
+      set({ isLoading: false });
+      return response.data;
+    } catch (error) {
+      set({
+        error: error.response?.data?.message || "Error fetching fields",
+        isLoading: false,
+      });
+      throw error;
+    }
+  },
 }));

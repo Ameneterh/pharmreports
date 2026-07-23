@@ -57,7 +57,7 @@ export default function DashReports() {
   };
 
   const { user } = useAuthStore();
-  const { getAllReports, isLoading } = useReportsStore();
+  const { getAllReports, getReportFields, isLoading } = useReportsStore();
 
   // sorting and filtering states
   const [searchTerm, setSearchTerm] = useState("");
@@ -70,6 +70,8 @@ export default function DashReports() {
   const [formData, setFormData] = useState({});
 
   // others
+  const [title, setTitle] = useState("");
+  const [filteredFields, setFilteredFields] = useState([]);
   const [reports, setReports] = useState([]);
   const [visibleCount, setVisibleCount] = useState(10);
   const [startIndex, setStartIndex] = useState(0);
@@ -80,6 +82,7 @@ export default function DashReports() {
 
   const [showMore, setShowMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showNewModal, setShowNewModal] = useState(false);
   const [showReadReportsModal, setShowReadReportsModal] = useState(false);
 
   const [selectedReport, setSelectedReport] = useState(null);
@@ -134,22 +137,24 @@ export default function DashReports() {
     setVisibleCount((prev) => prev - 10);
   };
 
-  const handleDeleteUser = async () => {
-    // setShowModal(false);
-    // try {
-    //   const res = await fetch(`/api/user/delete/${userIdToDelete}`, {
-    //     method: "DELETE",
-    //   });
-    //   const data = await res.json();
-    //   if (res.ok) {
-    //     setUsers((prev) => prev.filter((user) => user._id !== userIdToDelete));
-    //   } else {
-    //     console.log(data.message);
-    //   }
-    // } catch (error) {
-    //   console.log(error.message);
-    // }
+  const handleViewDetails = async (title) => {
+    setTitle(title);
+    handleGetInterventions(title);
+    setShowNewModal(true);
   };
+
+  const handleGetInterventions = async (fieldName) => {
+    const res = await getReportFields({
+      startDate,
+      endDate,
+      fields: [fieldName],
+    });
+
+    setFilteredFields(res.fields[fieldName]);
+    // console.log(res.fields[fieldName]);
+  };
+
+  console.log(filteredFields);
 
   const selectedReports = reports
     .filter((report) => {
@@ -208,91 +213,128 @@ export default function DashReports() {
       <div className="flex flex-col gap-5 w-full">
         <h1 className="text-xl font-extrabold">Reports List:</h1>
 
-        <div className="flex gap-5 items-center">
-          {!showFilters && (
-            <div
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-1 cursor-pointer"
-            >
-              <p className="text-primary">Filters</p>
-              <MdFilterList className="w-5 h-5" />
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-5 items-center">
+            {!showFilters && (
+              <div
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center gap-1 cursor-pointer"
+              >
+                <p className="text-primary">Filters</p>
+                <MdFilterList className="w-5 h-5" />
+              </div>
+            )}
+
+            {/* search bar */}
+            <div className="w-full max-w-96">
+              <Input
+                icon={Search}
+                type="text"
+                placeholder="Search by Reporter ..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
-          )}
 
-          {/* search bar */}
-          <div className="w-full max-w-96">
-            <Input
-              icon={Search}
-              type="text"
-              placeholder="Search by Reporter ..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            {/* select reports period */}
+            <div className="flex items-center gap-3">
+              {/* <div className="flex flex-col"> */}
+              {/* <p className="text-xs">Start Date</p> */}
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="text-sm h-9 px-1"
+              />
+              {/* </div> */}
+              to
+              {/* <div className="flex flex-col"> */}
+              {/* <p className="text-xs">End Date</p> */}
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="text-sm h-9 px-1"
+              />
+              {/* </div> */}
+            </div>
+
+            <button
+              onClick={() => getReports({ startDate, endDate })}
+              className="flex items-center gap-2 text-xs bg-blue-700 hover:bg-opacity-90 rounded px-3 py-2 text-white"
+            >
+              {isLoading ? (
+                <span className="flex items-center gap-1">
+                  <Loader
+                    size={18}
+                    className="animate-spin mx-auto text-white font-bold"
+                  />
+                  <p>Searching ...</p>
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 text-white">
+                  <Search size={18} className="text-white font-bold" />
+                  <p>Search</p>
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={generatePDF}
+              // onClick={() => handleOpenReadReportModal({ startDate, endDate })}
+              className="flex items-center gap-2 text-xs bg-blue-700 hover:bg-opacity-90 rounded px-3 py-2 text-white"
+            >
+              {pdfLoading ? (
+                <span className="flex items-center gap-1">
+                  <Loader
+                    size={18}
+                    className="animate-spin mx-auto text-white font-bold"
+                  />
+                  <p>Reading ...</p>
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 text-white">
+                  <ScanText size={18} className="text-white font-bold" />
+                  <span className="text-nowrap">Read All</span>
+                </span>
+              )}
+            </button>
           </div>
 
-          {/* select reports period */}
-          <div className="flex items-center gap-3">
-            {/* <div className="flex flex-col"> */}
-            {/* <p className="text-xs">Start Date</p> */}
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="text-sm h-9 px-1"
-            />
-            {/* </div> */}
-            to
-            {/* <div className="flex flex-col"> */}
-            {/* <p className="text-xs">End Date</p> */}
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="text-sm h-9 px-1"
-            />
-            {/* </div> */}
+          {/* second layer */}
+          <div className="flex items-center gap-3 p-2 bg-slate-400 rounded min-w-fit">
+            <button
+              className="flex items-center gap-2 text-xs rounded px-3 text-white hover:text-gray-950 hover:bg-white py-1 text-nowrap"
+              // onClick={() => handleViewDetails("remarks")}
+              onClick={() => handleViewDetails("remarks")}
+            >
+              Remarks
+            </button>
+            <button
+              className="flex items-center gap-2 text-xs rounded px-3 text-white hover:text-gray-950 hover:bg-white py-1 text-nowrap"
+              onClick={() => handleViewDetails("outOfStock")}
+            >
+              Out of Stock
+            </button>
+            <button
+              className="flex items-center gap-2 text-xs rounded px-3 text-white hover:text-gray-950 hover:bg-white py-1 text-nowrap"
+              onClick={() => handleViewDetails("interventions")}
+            >
+              Reviews
+            </button>
+            <button
+              className="flex items-center gap-2 text-xs rounded px-3 text-white hover:text-gray-950 hover:bg-white py-1 text-nowrap"
+              onClick={() => handleViewDetails("observations")}
+            >
+              Observations
+            </button>
+            <button
+              className="flex items-center gap-2 text-xs rounded px-3 text-white hover:text-gray-950 hover:bg-white py-1 text-nowrap"
+              onClick={() => handleViewDetails("challenges")}
+            >
+              Challenges
+            </button>
           </div>
-
-          <button
-            onClick={() => getReports({ startDate, endDate })}
-            className="flex items-center gap-2 text-xs bg-blue-700 hover:bg-opacity-90 rounded px-3 py-2 text-white"
-          >
-            {isLoading ? (
-              <span className="flex items-center gap-1">
-                <Loader
-                  size={18}
-                  className="animate-spin mx-auto text-white font-bold"
-                />
-                <p>Searching ...</p>
-              </span>
-            ) : (
-              <span className="flex items-center gap-1 text-white">
-                <Search size={18} className="text-white font-bold" />
-                <p>Search</p>
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={generatePDF}
-            // onClick={() => handleOpenReadReportModal({ startDate, endDate })}
-            className="flex items-center gap-2 text-xs bg-blue-700 hover:bg-opacity-90 rounded px-3 py-2 text-white"
-          >
-            {pdfLoading ? (
-              <span className="flex items-center gap-1">
-                <Loader
-                  size={18}
-                  className="animate-spin mx-auto text-white font-bold"
-                />
-                <p>Reading ...</p>
-              </span>
-            ) : (
-              <span className="flex items-center gap-1 text-white">
-                <ScanText size={18} className="text-white font-bold" />
-                <span className="text-nowrap">Read All</span>
-              </span>
-            )}
-          </button>
         </div>
 
         <motion.div
@@ -482,6 +524,162 @@ export default function DashReports() {
           startDate={startDate}
           endDate={endDate}
         />
+      )}
+
+      {/* modal to update user status */}
+      {showNewModal && (
+        <div className="p-2 fixed inset-0 bg-black bg-opacity-50 flex justify-center z-50">
+          <div className="mt-6 bg-white rounded shadow-lg w-full sm:w-[75%]  max-h-[90vh] sm:max-h-[80vh] relative">
+            {/* top close button */}
+            <span
+              className="flex items-center absolute top-1 right-2 cursor-pointer"
+              onClick={() => setShowNewModal(false)}
+            >
+              <span className="text-xs text-gray-400 mr-1">Close</span>
+              <CircleX className="text-red-500" />
+            </span>
+
+            <div className="flex flex-col p-2 rounded border text-sm bg-white">
+              <div className="flex flex-col pb-2 border-b-2">
+                <p className="capitalize font-bold text-lg text-center text-blue-900">
+                  View <span className="capitalize">{title}</span>
+                </p>
+              </div>
+
+              {/* reporter details */}
+              <article className="flex flex-col px-4 mt-3 overflow-y-auto max-h-[60vh] py-2">
+                {filteredFields &&
+                  filteredFields.map((field, index) => (
+                    <>
+                      <div className="flex items-center gap-1 text-sm -mb-3 text-nowrap">
+                        <span
+                          className="font-bold"
+                          title={field?.reporter?.fullname}
+                        >
+                          {field?.reporter?.fullname.length > 15
+                            ? field?.reporter?.fullname.slice(0, 10) + " ..."
+                            : field?.reporter?.fullname}
+                        </span>{" "}
+                        from
+                        <span className="font-semibold">
+                          {field.workStation}
+                        </span>
+                        <p className="block">
+                          on{" "}
+                          <span className="font-semibold">
+                            {field.createdAt
+                              ? new Date(field.createdAt).toLocaleString(
+                                  "en-US",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  },
+                                )
+                              : ""}
+                          </span>
+                        </p>
+                      </div>
+                      <ul key={index} className="list-disc text-sm">
+                        {/* {field.split("\n").map((line, i) => (
+                        <li key={i}>{line.trim()}</li>
+                      ))} */}
+                        {field.value.split("\n").map((line, i) => (
+                          <li key={i} className="flex items-start gap-1">
+                            <span>*</span>
+                            <span className="">{line.trim()}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  ))}
+
+                {/* {filteredFields &&
+                  filteredFields.map((field) => (
+                    <p className="flex items-center gap-1">
+                      <span>*</span>
+                      <span>{field}</span>
+                    </p>
+                  ))} */}
+                <section className="flex flex-col pb-3"></section>
+
+                {/* <div className="overflow-y-auto max-h-[55vh] p-2">
+                  <div className="flex flex-col gap-2 py-2 w-full">
+                    <div className="flex flex-col w-full mb-2">
+                      <p className="font-bold">Work Done:</p>
+                      <p className="whitespace-pre-line text-sm">
+                        {selectedReport?.dutiesDone}
+                      </p>
+                    </div>
+                    <div className="flex flex-col w-full mb-2">
+                      <p className="font-bold">Challenges:</p>
+                      <p className="whitespace-pre-line text-sm">
+                        {selectedReport?.challenges}
+                      </p>
+                    </div>
+                    <div className="flex flex-col w-full mb-2">
+                      <p className="font-bold">Observations:</p>
+                      <p className="whitespace-pre-line text-sm">
+                        {selectedReport?.observations}
+                      </p>
+                    </div>
+                    <div className="flex flex-col w-full mb-2">
+                      <p className="font-bold">Medication Reviews:</p>
+                      <p className="whitespace-pre-line text-sm">
+                        {selectedReport?.interventions}
+                      </p>
+                    </div>
+                    <div className="flex flex-col w-full mb-2">
+                      <p className="font-bold">Out of Stock:</p>
+                      <p className="whitespace-pre-line text-sm">
+                        {selectedReport?.outOfStock}
+                      </p>
+                    </div>
+                    <div className="flex flex-col w-full mb-2">
+                      <p className="font-bold">Remarks:</p>
+                      <p className="whitespace-pre-line text-sm">
+                        {selectedReport?.remarks}
+                      </p>
+                    </div>
+                    <div className="flex flex-col w-full mb-2">
+                      <p className="font-bold">Comments:</p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 p-2 bg-slate-200 gap-2">
+                        {selectedReport?.comments?.length > 0 ? (
+                          selectedReport?.comments?.map((comment) => (
+                            <div
+                              key={comment._id}
+                              className="flex flex-col text-sm"
+                            >
+                              <div className="p-1 bg-slate-50 rounded h-full">
+                                <span className="block text-xs">
+                                  Comment by:{" "}
+                                  <span className="font-semibold">
+                                    {comment?.commentBy?.rank === "Dep Director"
+                                      ? "Pharm Mrs"
+                                      : comment?.commentBy?.role ===
+                                          "pharmacist"
+                                        ? "Pharm"
+                                        : "Pharm Tech"}
+                                  </span>{" "}
+                                  <span className="font-bold">
+                                    {comment?.commentBy.fullname}
+                                  </span>
+                                </span>
+                                <p className="ml-4">{comment?.comment}</p>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <p>No comments</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div> */}
+              </article>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

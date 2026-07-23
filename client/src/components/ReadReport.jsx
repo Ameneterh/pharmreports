@@ -50,8 +50,8 @@ export default function ReadReport({
   };
 
   return (
-    <div className="p-2 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded shadow-lg w-full sm:w-[75%]  max-h-[90vh] sm:max-h-[85vh] relative">
+    <div className="p-2 fixed inset-0 bg-black bg-opacity-50 flex justify-center z-50">
+      <div className="bg-white rounded shadow-lg w-full sm:w-[75%]  max-h-[90vh] sm:max-h-[85vh] relative mt-6">
         {/* top close button */}
         <span
           className="flex items-center absolute top-1 right-2 cursor-pointer"
