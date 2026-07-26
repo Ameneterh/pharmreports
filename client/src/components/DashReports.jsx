@@ -302,38 +302,41 @@ export default function DashReports() {
           </div>
 
           {/* second layer */}
-          <div className="flex items-center gap-3 p-2 bg-slate-400 rounded min-w-fit">
-            <button
-              className="flex items-center gap-2 text-xs rounded px-3 text-white hover:text-gray-950 hover:bg-white py-1 text-nowrap"
-              // onClick={() => handleViewDetails("remarks")}
-              onClick={() => handleViewDetails("remarks")}
-            >
-              Remarks
-            </button>
-            <button
-              className="flex items-center gap-2 text-xs rounded px-3 text-white hover:text-gray-950 hover:bg-white py-1 text-nowrap"
-              onClick={() => handleViewDetails("outOfStock")}
-            >
-              Out of Stock
-            </button>
-            <button
-              className="flex items-center gap-2 text-xs rounded px-3 text-white hover:text-gray-950 hover:bg-white py-1 text-nowrap"
-              onClick={() => handleViewDetails("interventions")}
-            >
-              Reviews
-            </button>
-            <button
-              className="flex items-center gap-2 text-xs rounded px-3 text-white hover:text-gray-950 hover:bg-white py-1 text-nowrap"
-              onClick={() => handleViewDetails("observations")}
-            >
-              Observations
-            </button>
-            <button
-              className="flex items-center gap-2 text-xs rounded px-3 text-white hover:text-gray-950 hover:bg-white py-1 text-nowrap"
-              onClick={() => handleViewDetails("challenges")}
-            >
-              Challenges
-            </button>
+          <div className="flex items-center p-2 gap-2 text-blue-900 rounded min-w-fit">
+            <p className="text-sm text-black font-semibold">Quick Links: </p>
+            <div className="flex items-center gap-2 rounded min-w-fit drop-shadow-sm text-sm bg-slate-100">
+              <button
+                className="flex items-center gap-2 px-3 hover:underline underline-offset-2 hover:text-gray-950 py-1 text-nowrap"
+                // onClick={() => handleViewDetails("remarks")}
+                onClick={() => handleViewDetails("remarks")}
+              >
+                Remarks
+              </button>
+              <button
+                className="flex items-center gap-2 px-3 hover:underline underline-offset-2 hover:text-gray-950 py-1 text-nowrap"
+                onClick={() => handleViewDetails("outOfStock")}
+              >
+                Out of Stock
+              </button>
+              <button
+                className="flex items-center gap-2 px-3 hover:underline underline-offset-2 hover:text-gray-950 py-1 text-nowrap"
+                onClick={() => handleViewDetails("interventions")}
+              >
+                Reviews
+              </button>
+              <button
+                className="flex items-center gap-2 px-3 hover:underline underline-offset-2 hover:text-gray-950 py-1 text-nowrap"
+                onClick={() => handleViewDetails("observations")}
+              >
+                Observations
+              </button>
+              <button
+                className="flex items-center gap-2 px-3 hover:underline underline-offset-2 hover:text-gray-950 py-1 text-nowrap"
+                onClick={() => handleViewDetails("challenges")}
+              >
+                Challenges
+              </button>
+            </div>
           </div>
         </div>
 
@@ -556,13 +559,15 @@ export default function DashReports() {
                           className="font-bold"
                           title={field?.reporter?.fullname}
                         >
-                          {field?.reporter?.fullname.length > 15
-                            ? field?.reporter?.fullname.slice(0, 10) + " ..."
+                          {field?.reporter?.fullname.length > 20
+                            ? field?.reporter?.fullname.slice(0, 20) + " ..."
                             : field?.reporter?.fullname}
                         </span>{" "}
                         from
                         <span className="font-semibold">
-                          {field.workStation}
+                          {field?.workStation.length > 10
+                            ? field?.workStation.slice(0, 10)
+                            : field?.workStation}
                         </span>
                         <p className="block">
                           on{" "}
@@ -580,7 +585,7 @@ export default function DashReports() {
                           </span>
                         </p>
                       </div>
-                      <ul key={index} className="list-disc text-sm">
+                      <ul key={index} className="list-disc text-sm -ml-5">
                         {/* {field.split("\n").map((line, i) => (
                         <li key={i}>{line.trim()}</li>
                       ))} */}

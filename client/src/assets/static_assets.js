@@ -9,30 +9,34 @@ export const workStations = [
   },
   {
     id: "3",
-    name: "GOPD Pharmacy",
+    name: "Community Health Pharmacy",
   },
   {
     id: "4",
-    name: "Inpatient Pharmacy",
+    name: "GOPD Pharmacy",
   },
   {
     id: "5",
-    name: "Odo-Ado Annex",
+    name: "Inpatient Pharmacy",
   },
   {
     id: "6",
-    name: "Pharmacy Procurement",
+    name: "Odo-Ado Annex",
   },
   {
     id: "7",
-    name: "Pharmacy Stores",
+    name: "Pharmacy Procurement",
   },
   {
     id: "8",
-    name: "Renal Pharmacy",
+    name: "Pharmacy Stores",
   },
   {
     id: "9",
+    name: "Renal Pharmacy",
+  },
+  {
+    id: "10",
     name: "Satellite Pharmacy",
   },
 ];

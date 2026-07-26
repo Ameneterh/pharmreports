@@ -13,10 +13,12 @@ const isMeaningfulValue = (value) => {
 
   const invalidPatterns = [
     "nil",
+    "nol",
     "non",
     "none",
     "n/a",
     "no ",
+    "request",
     "not applicable",
     "nill",
     "no intervention",
@@ -29,32 +31,6 @@ const isMeaningfulValue = (value) => {
 
   return !invalidPatterns.some((pattern) => normalized.includes(pattern));
 };
-// const isMeaningfulValue = (value) => {
-//   if (!value) return false;
-
-//   const normalized = value.toString().trim().toLowerCase();
-
-//   const invalidValues = [
-//     "nil",
-//     "nill",
-//     "none",
-//     "no",
-//     "no intervention",
-//     "no interventions",
-//     "n/a",
-//     "na",
-//     "-",
-//     "--",
-//     "nothing",
-//     "not applicable",
-//     "no observation",
-//     "no observations",
-//   ];
-
-//   return !invalidValues.some((value) => normalized.includes(value));
-// };
-
-// create contact message
 
 export const sendReport = async (req, res) => {
   try {
