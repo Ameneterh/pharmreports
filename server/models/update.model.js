@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const notificationSchema = new mongoose.Schema(
+const updatesSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -34,7 +34,7 @@ const notificationSchema = new mongoose.Schema(
       },
     ],
 
-    notificationBy: {
+    updateBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
@@ -42,6 +42,6 @@ const notificationSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const Notification = mongoose.model("Notification", notificationSchema);
+const Update = mongoose.model("Update", updatesSchema);
 
-export default Notification;
+export default Update;

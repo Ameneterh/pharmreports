@@ -31,7 +31,7 @@ import { IoMdCloseCircle } from "react-icons/io";
 import { TbMessage, TbStarFilled } from "react-icons/tb";
 import { Input } from "./Input";
 import { useReportsStore } from "../store/reportsStore";
-import { useNotificationStore } from "../store/notificationStore";
+import { useUpdatesStore } from "../store/updatesStore";
 
 export default function HeaderComponent({ business }) {
   const menuItems = [
@@ -53,8 +53,7 @@ export default function HeaderComponent({ business }) {
   const [notifications, setNotifications] = useState([]);
 
   const { error, isLoading, logout, user } = useAuthStore();
-  const { getAllNotifications, readNotification, unreadCount } =
-    useNotificationStore();
+  const { getAllUpdates, readUpdate, unreadCount } = useUpdatesStore();
 
   const confirmLogout = () => {
     try {
@@ -66,20 +65,20 @@ export default function HeaderComponent({ business }) {
     }
   };
 
-  const getNotifications = async () => {
-    try {
-      const { notifications } = await getAllNotifications();
-      setNotifications(notifications);
-      return notifications;
-    } catch (error) {
-      console.log(error);
-      return [];
-    }
-  };
+  // const getNotifications = async () => {
+  //   try {
+  //     const { notifications } = await getAllNotifications();
+  //     setNotifications(notifications);
+  //     return notifications;
+  //   } catch (error) {
+  //     console.log(error);
+  //     return [];
+  //   }
+  // };
 
-  useEffect(() => {
-    getNotifications();
-  }, [user?._id]);
+  // useEffect(() => {
+  //   getNotifications();
+  // }, [user?._id]);
 
   return (
     <header className="w-full px-5 md:px-20 py-2 sm:py-4 bg-blue-900 shadow fixed left-0 top-0 flex items-center justify-between z-50">
@@ -126,7 +125,7 @@ export default function HeaderComponent({ business }) {
             >
               <img src={user.avatar} className="rounded-full h-8 w-8" />
               <div className="p-2 rounded-full bg-red-600 absolute top-1 left-5 flex items-center justify-center text-white text-xs w-4 h-4 border border-white">
-                {notifications?.unreadCount || 0}
+                {/* {notifications?.unreadCount || 0} */}3
               </div>
             </Link>
             <p className="font-bold text-md text-blue-800">

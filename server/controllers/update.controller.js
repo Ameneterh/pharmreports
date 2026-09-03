@@ -1,12 +1,12 @@
 import User from "../models/user.model.js";
-import Notification from "../models/notification.model.js";
+import Update from "../models/update.model.js";
 import { getDeadline, isSubmissionAllowed } from "../utils/reportDeadline.js";
 import dayjs from "../utils/dayjs.js";
 
 // send new notification
-export const sendNotification = async (req, res) => {
+export const sendUpdate = async (req, res) => {
   try {
-    const { title, content, remarks, notificationBy } = req.body;
+    const { title, content, remarks, updateBy } = req.body;
 
     // Validate required fields
     if (!title || !content) {
@@ -17,45 +17,47 @@ export const sendNotification = async (req, res) => {
     }
 
     // Create report
-    const notification = await Notification.create({
+    const update = await Update.create({
       title,
       content,
       remarks,
-      notificationBy,
+      updateBy,
+      readBy: [],
     });
 
     res.status(201).json({
       success: true,
-      notification,
+      update,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Error sending update",
+      error: error.message,
     });
   }
 };
 
 // get all notifications
-export const getNotifications = async (req, res) => {
+export const getUpdates = async (req, res) => {
   try {
-    const notifications = await Notification.find()
-      .populate("notificationBy")
+    const updates = await Update.find()
+      .populate("updateBy")
       .populate("readBy.reader")
       .sort({ createdAt: -1 });
 
-    const unreadCount = notifications?.filter(
-      (notification) =>
-        !notification.readBy.some(
+    const unreadCount = updates?.filter(
+      (update) =>
+        !update.readBy.some(
           (item) => item.reader._id.toString() === req.userId.toString(),
         ),
     ).length;
 
     res.json({
       success: true,
-      message: "Notifications fetched successfully",
-      notifications: {
-        notifications,
+      message: "Updates fetched successfully",
+      updates: {
+        updates,
         unreadCount,
       },
     });
@@ -68,11 +70,11 @@ export const getNotifications = async (req, res) => {
 };
 
 // mark notification as read
-export const markNotificationRead = async (req, res) => {
+export const markUpdateRead = async (req, res) => {
   try {
     const userId = req.userId;
 
-    const notification = await Notification.findOneAndUpdate(
+    const update = await Update.findOneAndUpdate(
       {
         _id: req.params.id,
         "readBy.reader": { $ne: userId }, // ✅ only if user not already in array
@@ -88,23 +90,18 @@ export const markNotificationRead = async (req, res) => {
       { new: true },
     );
 
-    // If null, it means:
-    // - notification doesn't exist OR
-    // - user already read it (which we want to ignore)
+    const existingUpdate = update || (await Update.findById(req.params.id));
 
-    const existingNotification =
-      notification || (await Notification.findById(req.params.id));
-
-    if (!existingNotification) {
+    if (!existingUpdate) {
       return res.status(404).json({
         success: false,
-        message: "Notification not found",
+        message: "Update not found",
       });
     }
 
     res.json({
       success: true,
-      notification: existingNotification,
+      update: existingUpdate,
     });
   } catch (err) {
     res.status(500).json({
@@ -118,18 +115,18 @@ export const markNotificationRead = async (req, res) => {
 export const markAllRead = async (req, res) => {
   const userId = req.userId;
 
-  const notifications = await Notification.find({
+  const updates = await Update.find({
     "readBy.reader": {
       $ne: userId,
     },
   });
 
-  for (const notification of notifications) {
-    notification.readBy.push({
+  for (const udpate of updates) {
+    update.readBy.push({
       reader: userId,
     });
 
-    await notification.save();
+    await update.save();
   }
 
   res.json({
@@ -241,36 +238,6 @@ export const getWeeklySummary = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({
-      message: error.message,
-    });
-  }
-};
-
-// get one invoice
-export const getInvoice = async (req, res) => {
-  const invoiceId = req.params.invoiceId;
-
-  try {
-    const invoice = await Invoice.findById(invoiceId)
-      .populate("client")
-      .populate("company")
-      .populate("createdBy");
-
-    if (!invoice) {
-      return res.status(404).json({
-        success: false,
-        message: "Invoice not found",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Invoice fetched successfully",
-      invoice,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
       message: error.message,
     });
   }

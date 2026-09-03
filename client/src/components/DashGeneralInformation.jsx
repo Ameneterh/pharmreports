@@ -15,9 +15,9 @@ import AdminDashboardComponent, {
 import { UserDashboardComponents } from "./AdminDashboardComponent";
 import Divider from "./Divider";
 import { BellPlus, Check, Loader, X } from "lucide-react";
-import { useNotificationStore } from "../store/notificationStore";
+import { useUpdatesStore } from "../store/updatesStore";
 import toast from "react-hot-toast";
-import ReadNotification from "./ReadNotification";
+import ReadUpdate from "./ReadUpdate";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -32,34 +32,34 @@ const fadeInUp = {
   }),
 };
 
-export default function DashNotifications() {
+export default function DashGeneralInformation() {
   const { user } = useAuthStore();
-  const { sendNotification, readNotification, getAllNotifications, isLoading } =
-    useNotificationStore();
+  const { sendUpdate, readUpdate, getAllUpdates, isLoading } =
+    useUpdatesStore();
 
   const [formData, setFormData] = useState({
     title: "",
     content: "",
     remarks: "",
   });
-  const [notifications, setNotifications] = useState([]);
+  const [updates, setUpdates] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedNotification, setSelectedNotification] = useState(null);
+  const [selectedUpdate, setSelectedUpdate] = useState(null);
 
-  const handleOpenModal = (notification) => {
-    setSelectedNotification(notification);
+  const handleOpenModal = (update) => {
     setShowModal(true);
+    setSelectedUpdate(update);
   };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  const getNotifications = async () => {
+  const getUpdates = async () => {
     try {
-      const { notifications } = await getAllNotifications();
-      setNotifications(notifications.notifications);
-      return notifications;
+      const { updates } = await getAllUpdates(user?._id);
+      setUpdates(updates);
+      return updates;
     } catch (error) {
       console.log(error);
       return [];
@@ -67,48 +67,48 @@ export default function DashNotifications() {
   };
 
   useEffect(() => {
-    getNotifications();
+    getUpdates();
   }, [user._id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      await sendNotification({
+      await sendUpdate({
         title: formData.title,
         content: formData.content,
         remarks: formData.remarks,
-        notificationBy: user._id,
+        updateBy: user._id,
       });
       setFormData({
         title: "",
         content: "",
         remarks: "",
       });
-      getNotifications();
-      toast.success("New notification sent successfully!");
+      getUpdates();
+      toast.success("New update sent successfully!");
     } catch (error) {
       console.log(error);
-      toast.error("Failed to send notification.");
+      toast.error("Failed to send update.");
     }
   };
 
-  const handleReadNotification = async (id) => {
+  const handleReadUpdate = async (id) => {
     try {
-      await readNotification({ id, user });
-      getNotifications();
-      toast.success("Notification read successfully!");
+      await readUpdate({ id, user });
+      getUpdates();
+      toast.success("Update read successfully!");
       setShowModal(false);
     } catch (error) {
       console.log(error);
-      toast.error("Failed to mark notification as read.");
+      toast.error("Failed to mark update as read.");
     }
   };
 
   return (
     <div className="flex flex-col gap-4 w-full p-3 md:mt-6">
       <h1 className="text-2xl font-bold text-blue-900 bg-clip-text">
-        Notifications
+        General Updates
       </h1>
 
       <motion.div
@@ -125,7 +125,7 @@ export default function DashNotifications() {
             className="bg-opacity-40 w-full max-w-96 max-h-fit bg-white rounded-md shadow-md shadow-slate-400 border p-3"
           >
             <p className="text-lg text-center font-bold text-blue-900">
-              Send General Notification
+              Send General Update
             </p>
 
             <form onSubmit={handleSubmit} className="flex flex-col mt-5 gap-5">
@@ -188,7 +188,7 @@ export default function DashNotifications() {
                 ) : (
                   <span className="flex items-center gap-1 text-white">
                     <BellPlus size={18} className="text-white font-bold" />
-                    <p>Send Notification</p>
+                    <p>Send Update</p>
                   </span>
                 )}
               </button>
@@ -196,7 +196,7 @@ export default function DashNotifications() {
           </motion.div>
         )}
 
-        {/* notifications content display */}
+        {/* update content display */}
         <motion.div
           variants={fadeInUp}
           initial="hidden"
@@ -205,43 +205,43 @@ export default function DashNotifications() {
         >
           <div className="flex flex-col gap-2">
             <p className="text-lg font-semibold text-gray-900">
-              Recent Notifications
+              Recent Updates
             </p>
-            {notifications?.length > 0 ? (
+            {updates?.length > 0 ? (
               <table className="border-collapse table-auto mx-auto min-w-full border-none overflow-x-scroll scrollbar scrollbar-track-transparent scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500">
                 <tbody className="">
-                  {notifications?.slice(0, 10).map((notification) => (
+                  {updates?.slice(0, 10).map((update) => (
                     <tr
-                      key={notification?._id}
+                      key={update?._id}
                       className="border-b border-b-gray-600"
                     >
                       <td className="py-1 text-xs align-top">
                         <div className="flex-col md:flex-row items-center gap-1">
                           <div className="flex items-start md:items-center gap-1">
-                            {notification?.createdAt
-                              ? new Date(
-                                  notification?.createdAt,
-                                ).toLocaleString("en-US", {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                })
+                            {update?.createdAt
+                              ? new Date(update?.createdAt).toLocaleString(
+                                  "en-US",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  },
+                                )
                               : ""}
                             <div className="flex items-start gap-2 text-nowrap">
                               <div className="flex flex-col">
                                 <p className="flex items-center gap-1">
                                   <span className="font-semibold flex items-center gap-1">
                                     <span className="font-semibold">
-                                      {notification?.notificationBy?.rank ===
-                                      "admin"
+                                      {update?.updateBy?.rank === "admin"
                                         ? "Pharm Mrs"
-                                        : notification?.notificationBy?.role ===
+                                        : update?.updateBy?.role ===
                                             "pharmacist"
                                           ? "Pharm"
                                           : "Pharm Tech"}
                                     </span>{" "}
                                     <span className="flex items-center capitalize">
-                                      {notification?.notificationBy?.fullname}
+                                      {update?.updateBy?.fullname}
                                     </span>
                                   </span>
                                 </p>
@@ -252,7 +252,7 @@ export default function DashNotifications() {
                           <p className="px-4 py-1 align-top line-clamp-2">
                             <span className="font-semibold block">
                               <span className="flex items-center gap-1">
-                                {notification?.readBy?.some(
+                                {update?.readBy?.some(
                                   (item) => item.reader._id === user._id,
                                 ) ? (
                                   <Check size={16} className="text-blue-700" />
@@ -260,30 +260,29 @@ export default function DashNotifications() {
                                   <X size={16} className="text-red-700" />
                                 )}
 
-                                {notification?.title}
+                                {update?.title}
                               </span>
                             </span>
                             <span className="flex flex-col gap-1">
-                              {notification?.content}
-                              {notification?.readBy &&
-                                notification?.readBy.length > 0 && (
-                                  <span className="text-xs text-gray-700 flex items-center gap-1">
-                                    {notification?.readBy?.map((item) => (
-                                      <span
-                                        key={item._id}
-                                        title={item.reader.fullname}
-                                        className="flex items-center font-normal -ml-3 border border-white rounded-full"
-                                      >
-                                        <img
-                                          src={item.reader.avatar}
-                                          className="w-5 h-5 rounded-full"
-                                        />
-                                      </span>
-                                    ))}{" "}
-                                    {notification?.readBy.length} readers have
-                                    read this notification.
-                                  </span>
-                                )}
+                              {update?.content}
+                              {update?.readBy && update?.readBy.length > 0 && (
+                                <span className="text-xs text-gray-700 flex items-center gap-1">
+                                  {update?.readBy?.map((item) => (
+                                    <span
+                                      key={item._id}
+                                      title={item.reader.fullname}
+                                      className="flex items-center font-normal -ml-3 border border-white rounded-full"
+                                    >
+                                      <img
+                                        src={item.reader.avatar}
+                                        className="w-5 h-5 rounded-full"
+                                      />
+                                    </span>
+                                  ))}{" "}
+                                  {update?.readBy.length} readers have read this
+                                  update.
+                                </span>
+                              )}
                             </span>
                           </p>
                         </div>
@@ -292,7 +291,7 @@ export default function DashNotifications() {
                       <td className="px-4 py-1 text-sm capitalize align-top">
                         <span
                           className="flex items-center gap-2 text-blue-700 rounded cursor-pointer w-fit hover:scale-110 transition-all duration-300 hover:underline underline-offset-2"
-                          onClick={() => handleOpenModal(notification)}
+                          onClick={() => handleOpenModal(update)}
                         >
                           Read
                         </span>
@@ -302,7 +301,7 @@ export default function DashNotifications() {
                 </tbody>
               </table>
             ) : (
-              <p>No new notifications found!</p>
+              <p>No new updates found!</p>
             )}
           </div>
         </motion.div>
@@ -310,11 +309,11 @@ export default function DashNotifications() {
 
       {/* modal to update user status */}
       {showModal && (
-        <ReadNotification
-          selectedNotification={selectedNotification}
+        <ReadUpdate
+          selectedUpdate={selectedUpdate}
           showModal={showModal}
           setShowModal={setShowModal}
-          handleReadNotification={handleReadNotification}
+          handleReadUpdate={handleReadUpdate}
         />
       )}
     </div>

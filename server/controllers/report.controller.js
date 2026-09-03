@@ -454,8 +454,7 @@ export const getReports = async (req, res) => {
 // };
 
 // generate reports summary
-
-export const getWeeklySummary = async (req, res) => {
+export const getWeeklySummary1 = async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
 
@@ -516,6 +515,104 @@ export const getWeeklySummary = async (req, res) => {
       },
     });
   } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const getWeeklySummary = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999);
+
+    // 1. Get all users who are expected to submit reports
+    const users = await User.find({
+      role: { $ne: "architect" },
+      rank: {
+        $in: [
+          "Pharmacy Technician",
+          "Senior Pharm Tech",
+          "Intern Pharmacist",
+          "Pharmacist 1",
+          "Senior Pharmacist",
+          "Principal Pharmacist",
+          "Chief Pharmacist",
+          "Asst Director",
+        ],
+      },
+      status: "active",
+    }).select("_id fullname role");
+
+    // 2. Get reports submitted within the selected period
+    const reports = await Report.find({
+      createdAt: {
+        $gte: start,
+        $lte: end,
+      },
+    }).populate("reporter");
+
+    // 3. Initialize EVERY user with zero reports/interventions
+    const summary = {};
+
+    users.forEach((user) => {
+      summary[user._id.toString()] = {
+        name: user.fullname,
+        totalReports: 0,
+        interventions: 0,
+      };
+    });
+
+    // 4. Add submitted reports to the appropriate user
+    reports.forEach((report) => {
+      if (!report.reporter) return;
+
+      const id = report.reporter._id.toString();
+
+      // In case a report belongs to a user that wasn't
+      // included in the users query
+      if (!summary[id]) {
+        summary[id] = {
+          name: report.reporter.fullname,
+          totalReports: 0,
+          interventions: 0,
+        };
+      }
+
+      summary[id].totalReports++;
+
+      // Count intervention
+      if (
+        report.interventions &&
+        typeof report.interventions === "string" &&
+        !/^(nil|nill|none|n\/a|na|no|no intervention|no interventions|not applicable|-|0)$/i.test(
+          report.interventions.trim(),
+        ) &&
+        report.interventions.trim().length > 0
+      ) {
+        summary[id].interventions++;
+      }
+    });
+
+    // 5. Convert object to array
+    const formatted = Object.values(summary);
+
+    // 6. Generate Excel using the COMPLETE summary
+    const excel = await generateExcel(formatted, startDate, endDate);
+
+    res.status(200).json({
+      message: "Summary generated successfully!",
+      data: formatted,
+      files: {
+        excel,
+      },
+    });
+  } catch (error) {
+    console.error("Weekly summary error:", error);
+
     res.status(500).json({
       message: error.message,
     });

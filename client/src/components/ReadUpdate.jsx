@@ -17,12 +17,12 @@ import { useReportsStore } from "../store/reportsStore";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
-export default function ReadNotification({
-  selectedNotification,
-  handleReadNotification,
+export default function ReadUpdate({
+  selectedUpdate,
+  handleReadUpdate,
   showModal,
   setShowModal,
-  getNotifications,
+  getUpdates,
 }) {
   const { user } = useAuthStore();
   const navigate = useNavigate();
@@ -54,7 +54,7 @@ export default function ReadNotification({
         {/* top close button */}
         <span
           className="flex items-center absolute top-1 right-2 cursor-pointer bg-white py-1 px-2 rounded-full"
-          onClick={() => handleReadNotification(selectedNotification?._id)}
+          onClick={() => handleReadUpdate(selectedUpdate?._id)}
         >
           <span className="text-xs text-gray-400 mr-1">Close</span>
           <CircleX className="text-red-500" />
@@ -63,7 +63,7 @@ export default function ReadNotification({
         <div className="flex flex-col p-2 rounded border text-sm">
           <div className="flex flex-col pb-2 border-b-2">
             <p className="capitalize font-bold text-lg text-center text-blue-900">
-              Reading Notification
+              Reading Update
             </p>
           </div>
 
@@ -71,19 +71,17 @@ export default function ReadNotification({
           <article className="flex flex-col px-4 mt-3 pb-6">
             <section className="flex flex-col border-b border-b-gray-900 pb-3">
               <p className="flex items-center gap-1">
-                Notification By:{" "}
+                Update By:{" "}
                 <span className="font-semibold flex items-center gap-1">
                   <span className="font-semibold">
-                    {selectedNotification?.notificationBy?.rank ===
-                    "Dep Director"
+                    {selectedUpdate?.updateBy?.rank === "Dep Director"
                       ? "Pharm Mrs"
-                      : selectedNotification?.notificationBy?.role ===
-                          "pharmacist"
+                      : selectedUpdate?.updateBy?.role === "pharmacist"
                         ? "Pharm"
                         : "Pharm Tech"}
                   </span>{" "}
                   <span className="flex items-center capitalize">
-                    {selectedNotification?.notificationBy?.fullname}
+                    {selectedUpdate?.updateBy?.fullname}
                   </span>
                 </span>
               </p>
@@ -93,16 +91,16 @@ export default function ReadNotification({
             <section className="flex flex-col mt-3">
               <p className="flex items-start gap-1">
                 <span className="font-semibold">Title:</span>{" "}
-                {selectedNotification?.title}
+                {selectedUpdate?.title}
               </p>
               <p className="flex items-start gap-1 mt-2">
                 <span className="font-semibold">Content:</span>{" "}
-                {selectedNotification?.content}
+                {selectedUpdate?.content}
               </p>
-              {selectedNotification?.remarks && (
+              {selectedUpdate?.remarks && (
                 <p className="flex items-start gap-1 mt-2">
                   <span className="font-semibold">Remarks:</span>{" "}
-                  {selectedNotification?.remarks}
+                  {selectedUpdate?.remarks}
                 </p>
               )}
             </section>
@@ -116,7 +114,7 @@ export default function ReadNotification({
             >
               <div className="relative w-full">
                 <p className="bg-opacity-20 text-xs bg-white px-2 absolute left-0 -top-2">
-                  Reply to Notification (Optional)
+                  Reply to Update (Optional)
                 </p>
                 <textarea
                   value={reply}
@@ -129,7 +127,7 @@ export default function ReadNotification({
               <button
                 type="submit"
                 className="flex items-center gap-2 px-2 py-2 bg-green-700 text-white rounded cursor-pointer w-fit hover:scale-110 hover:bg-green-900 transition-all duration-300"
-                title="Reply to Notification"
+                title="Reply to Update"
                 // onClick={() => handleOpenModal(business)}
               >
                 <MessageSquareText size={16} />

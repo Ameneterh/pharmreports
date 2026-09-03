@@ -12,7 +12,7 @@ import SendReport from "./SendReport";
 import DashReports from "../components/DashReports";
 import DashAddUser from "../components/DashAddUser";
 import DashGenerateReport from "../components/DashGenerateReport";
-import DashNotifications from "../components/DashNotifications";
+import DashGeneralInformation from "../components/DashGeneralInformation";
 
 export default function UserDashboard() {
   const { user, logout, isLoading } = useAuthStore();
@@ -62,7 +62,7 @@ export default function UserDashboard() {
         {tab === "add-user" && <DashAddUser />}
 
         {/* view clients */}
-        {tab === "notifications" && <DashNotifications />}
+        {tab === "general-information" && <DashGeneralInformation />}
 
         {/* view business */}
         {tab === "reports" && <DashReports />}

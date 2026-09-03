@@ -20,9 +20,13 @@ import { Link, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { Button, Sidebar } from "flowbite-react";
 import Divider from "./Divider";
+import { useUpdatesStore } from "../store/updatesStore";
 
 export default function DashSidebar() {
   const { error, isLoading, logout, user } = useAuthStore();
+  const { getAllUpdates, readUpdate, unreadCount } = useUpdatesStore();
+
+  const [updates, setUpdates] = useState([]);
 
   const location = useLocation();
   const [tab, setTab] = useState("");
@@ -34,6 +38,21 @@ export default function DashSidebar() {
       setTab(tabFromUrl);
     }
   }, [location.search]);
+
+  const getUpdates = async () => {
+    try {
+      const { updates } = await getAllUpdates(user?._id);
+      setUpdates(updates);
+      return updates;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  };
+
+  useEffect(() => {
+    getUpdates();
+  }, [user?._id]);
 
   return (
     // <div className="min-h-screen w-full">
@@ -70,13 +89,19 @@ export default function DashSidebar() {
                 </Sidebar.Item>
               </Link>
 
-              <Link to="/user-dashboard?tab=notifications">
+              <Link to="/user-dashboard?tab=general-information">
                 <Sidebar.Item
-                  active={tab === "notifications"}
+                  active={tab === "general-information"}
                   icon={MdOutlineNotificationsActive}
                   as="div"
+                  className=""
                 >
-                  Nofications
+                  General Info{" "}
+                  <div className="relative inline-block">
+                    <span className="absolute -top-4 left-0 text-xs bg-red-900 text-white px-1 font-semibold">
+                      {unreadCount || 0}
+                    </span>
+                  </div>
                 </Sidebar.Item>
               </Link>
 
