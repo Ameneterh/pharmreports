@@ -454,6 +454,7 @@ export const getReports = async (req, res) => {
 // };
 
 // generate reports summary
+
 export const getWeeklySummary1 = async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
@@ -521,6 +522,7 @@ export const getWeeklySummary1 = async (req, res) => {
   }
 };
 
+// New version of getWeeklySummary with improved logic and validation
 export const getWeeklySummary = async (req, res) => {
   try {
     const { startDate, endDate } = req.query;

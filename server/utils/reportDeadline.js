@@ -6,11 +6,11 @@ export function getDeadline(reportDate, shift) {
   const base = dayjs.tz(reportDate, TZ);
 
   if (shift === "Morning") {
-    return base.endOf("day"); // same day 11:59 PM
+    return base.endOf("day").hour(2).minute(59).second(59); // same day 11:59 PM
   }
 
   if (shift === "Night") {
-    return base.add(1, "day").hour(11).minute(59).second(59);
+    return base.add(1, "day").hour(14).minute(59).second(59);
   }
 
   throw new Error("Invalid shift type");
