@@ -73,6 +73,7 @@ const userSchema = new mongoose.Schema(
     rank: {
       type: String,
       enum: [
+        "Admin Officer",
         "Pharmacy Technician",
         "Senior Pharm Tech",
         "Intern Pharmacist",

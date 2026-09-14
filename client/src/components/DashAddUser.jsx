@@ -149,6 +149,7 @@ export default function DashAddUser() {
                   className="w-full pl-3 pr-3 py-[7px] bg-white rounded-lg border border-gray-700 focus:border-green-500 focus:ring-2 focus:ring-green-500 text-green-800 placeholder-green-800 transition duration-200 text-sm"
                 >
                   <option value="">Select User Rank</option>
+                  <option value="Admin Officer">Admin Officer</option>
                   <option value="Pharmacy Technician">
                     Pharmacy Technician
                   </option>
