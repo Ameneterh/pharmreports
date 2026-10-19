@@ -39,14 +39,6 @@ li {
   list-style-type: none;
 }
 
-input,
-select {
-  /* min-height: 42px; */
-  border: 1px solid rgb(212, 212, 212);
-  border-radius: 5px !important;
-  /* width: 100%; */
-}
-
 .max-width {
   height: 8px !important;
   width: 8px !important;
@@ -60,11 +52,19 @@ select {
   margin-bottom: -5px;
 }
 
+input,
+select {
+  /* min-height: 42px; */
+  border: 1px solid rgb(212, 212, 212);
+  /* border-radius: 5px !important; */
+  /* width: 100%; */
+}
+
 input:focus,
 select:focus {
   /* min-height: 42px; */
-  border: 1px solid rgb(134, 134, 134);
-  border-radius: 5px !important;
+  /* border: 1px solid rgb(134, 134, 134); */
+  /* border-radius: 5px !important; */
   box-shadow: none !important;
 }
 

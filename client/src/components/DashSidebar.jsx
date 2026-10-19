@@ -145,6 +145,20 @@ export default function DashSidebar() {
             </>
           )}
 
+          {(user.username === "Ameneterh" || user.role === "architect") && (
+            <>
+              <Link to="/user-dashboard?tab=pharmacare">
+                <Sidebar.Item
+                  active={tab === "pharmacare"}
+                  icon={MdOutlineCreateNewFolder}
+                  as="div"
+                >
+                  Pharma Care Plan
+                </Sidebar.Item>
+              </Link>
+            </>
+          )}
+
           {user.isAdmin && (
             <>
               <Link to="/user-dashboard?tab=add-user">

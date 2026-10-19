@@ -534,6 +534,7 @@ export const getWeeklySummary = async (req, res) => {
     // 1. Get all users who are expected to submit reports
     const users = await User.find({
       role: { $ne: "architect" },
+      status: { $ne: "deleted" },
       rank: {
         $in: [
           "Pharmacy Technician",
@@ -616,36 +617,6 @@ export const getWeeklySummary = async (req, res) => {
     console.error("Weekly summary error:", error);
 
     res.status(500).json({
-      message: error.message,
-    });
-  }
-};
-
-// get one invoice
-export const getInvoice = async (req, res) => {
-  const invoiceId = req.params.invoiceId;
-
-  try {
-    const invoice = await Invoice.findById(invoiceId)
-      .populate("client")
-      .populate("company")
-      .populate("createdBy");
-
-    if (!invoice) {
-      return res.status(404).json({
-        success: false,
-        message: "Invoice not found",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Invoice fetched successfully",
-      invoice,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
       message: error.message,
     });
   }

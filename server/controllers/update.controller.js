@@ -46,20 +46,18 @@ export const getUpdates = async (req, res) => {
       .populate("readBy.reader")
       .sort({ createdAt: -1 });
 
-    const unreadCount = updates?.filter(
+    const unreadCount = updates.filter(
       (update) =>
         !update.readBy.some(
-          (item) => item.reader._id.toString() === req.userId.toString(),
+          (item) => item.reader._id.toString() === req.user._id.toString(),
         ),
     ).length;
 
     res.json({
       success: true,
       message: "Updates fetched successfully",
-      updates: {
-        updates,
-        unreadCount,
-      },
+      updates,
+      unreadCount,
     });
   } catch (error) {
     res.status(500).json({

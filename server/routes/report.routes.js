@@ -9,12 +9,18 @@ import {
   getWeeklySummary,
   getReportFieldsSummary,
 } from "../controllers/report.controller.js";
+import { authorize } from "../middlewares/authorize.js";
 
 const router = express.Router();
 
-router.post("/send-report", sendReport);
-router.put("/send-comment", sendComment);
-router.get("/get-reports", getReports);
+router.post(
+  "/send-report",
+  verifyToken,
+  authorize("reports:create"),
+  sendReport,
+);
+router.put("/send-comment", authorize("comments:view"), sendComment);
+router.get("/get-reports", verifyToken, authorize("reports:view"), getReports);
 router.get("/report-fields", getReportFieldsSummary);
 // router.get("/generate-report", getWeeklySummary);
 router.get("/summary", getWeeklySummary);

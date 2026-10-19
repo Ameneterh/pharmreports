@@ -13,6 +13,8 @@ import UserDashboard from "./pages/UserDashboard.jsx";
 import ContactUs from "./pages/ContactUs.jsx";
 import { useLocation } from "react-router-dom";
 import RegisterUser from "./pages/RegisterUser.jsx";
+import EditPatientRecords from "./pages/EditPatientRecords.jsx";
+import ViewPatientRecords from "./pages/ViewPatientRecords.jsx";
 
 // protected routes
 const ProtectedRoute = ({ children }) => {
@@ -97,6 +99,14 @@ function App() {
         />
 
         <Route path="/support" element={<ContactUs />} />
+        <Route
+          path="/edit-patient-records/:hospitalNumber"
+          element={<EditPatientRecords />}
+        />
+        <Route
+          path="/view-patient-records/:hospitalNumber"
+          element={<ViewPatientRecords />}
+        />
         <Route path="*" element={<NotFoundPage />} />
 
         {/* protected routes */}

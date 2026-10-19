@@ -13,6 +13,8 @@ import DashReports from "../components/DashReports";
 import DashAddUser from "../components/DashAddUser";
 import DashGenerateReport from "../components/DashGenerateReport";
 import DashGeneralInformation from "../components/DashGeneralInformation";
+import PharmaCarePage from "./PharmaCarePage";
+import AddNewPatient from "../components/PharmaCareComponents/AddNewPatient";
 
 export default function UserDashboard() {
   const { user, logout, isLoading } = useAuthStore();
@@ -69,6 +71,10 @@ export default function UserDashboard() {
 
         {/* generate reports */}
         {tab === "generate-report" && <DashGenerateReport />}
+
+        {/* pharma care links */}
+        {tab === "pharmacare" && <PharmaCarePage />}
+        {tab === "add-patient" && <AddNewPatient />}
       </motion.div>
     </MainLayout>
   );

@@ -62,3 +62,13 @@ export const dutyTime = [
     name: "Night",
   },
 ];
+
+export const patients = [
+  {
+    id: "1",
+    hospitalNumber: "AH000001",
+    name: "Amene Terhemen",
+    dob: "09/25/1979",
+    address: "Medical Quarters Flat A 23",
+  },
+];

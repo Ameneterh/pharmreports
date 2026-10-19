@@ -149,7 +149,7 @@ export const useReportsStore = create((set) => ({
       return response.data;
     } catch (error) {
       set({
-        error: error.response.data.message || "Error getting Reports",
+        error: error?.response?.data?.message || "Error getting Reports",
         isLoading: false,
       });
       throw error;

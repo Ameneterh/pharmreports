@@ -1,37 +1,68 @@
 import jwt from "jsonwebtoken";
+import User from "../models/user.model.js";
 
 // export const verifyToken = (req, res, next) => {
-//   const token = req.headers.authorization?.split(" ")[1];
-//   if (!token) return res.status(401).json({ message: "No token found" });
+//   const token = req.cookies.token;
+//   if (!token)
+//     return res.status(401).json({
+//       success: false,
+//       message: "Unuthorized! - No valid token provided",
+//     });
 
 //   try {
-//     req.user = jwt.verify(token, process.env.JWT_SECRET_KEY);
+//     const decoded = jwt.verify(token, process.env.JWT_TOKEN);
+
+//     if (!decoded)
+//       return res
+//         .status(401)
+//         .json({ success: false, message: "Unauthorized! - Invalid token" });
+
+//     req.userId = decoded.userId;
 //     next();
-//   } catch {
-//     res.status(401).json({ message: "Invalid token" });
+//   } catch (error) {
+//     console.log("Error in verifyToken", error);
+//     return res.status(500).json({ success: false, message: "Server error" });
 //   }
 // };
 
-export const verifyToken = (req, res, next) => {
+export const verifyToken = async (req, res, next) => {
   const token = req.cookies.token;
-  if (!token)
+
+  if (!token) {
     return res.status(401).json({
       success: false,
-      message: "Unuthorized! - No valid token provided",
+      message: "Unauthorized! - No valid token provided",
     });
+  }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_TOKEN);
 
-    if (!decoded)
-      return res
-        .status(401)
-        .json({ success: false, message: "Unauthorized! - Invalid token" });
+    if (!decoded) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized! - Invalid token",
+      });
+    }
 
-    req.userId = decoded.userId;
+    const user = await User.findById(decoded.userId).select("-password");
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized! - User not found",
+      });
+    }
+
+    req.user = user;
+
     next();
   } catch (error) {
-    console.log("Error in verifyToken", error);
-    return res.status(500).json({ success: false, message: "Server error" });
+    console.log("Error in verifyToken:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };

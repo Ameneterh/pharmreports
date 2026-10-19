@@ -357,24 +357,6 @@ export const resetPassword = async (req, res) => {
   }
 };
 
-// check authentication
-export const CheckAuth = async (req, res) => {
-  try {
-    const user = await User.findById(req.userId).select("-password");
-
-    if (!user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "User not found" });
-    }
-
-    res.status(200).json({ success: true, user });
-  } catch (error) {
-    console.log("Error in checkAuth", error);
-    res.status(400).json({ sucess: false, message: error.message });
-  }
-};
-
 // general users actions
 // 1. get all users
 export const getUsers = async (req, res) => {
@@ -432,5 +414,23 @@ export const getUsers = async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+};
+
+// check authentication
+export const CheckAuth = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "User not found" });
+    }
+
+    res.status(200).json({ success: true, user });
+  } catch (error) {
+    console.log("Error in checkAuth", error);
+    res.status(400).json({ sucess: false, message: error.message });
   }
 };

@@ -97,6 +97,7 @@ export default function DashReports() {
 
       return reports;
     } catch (error) {
+      toast.error(error?.response?.data?.message);
       console.log(error);
       return [];
     }
@@ -154,7 +155,7 @@ export default function DashReports() {
     // console.log(res.fields[fieldName]);
   };
 
-  console.log(filteredFields);
+  // console.log(filteredFields);
 
   const selectedReports = reports
     .filter((report) => {

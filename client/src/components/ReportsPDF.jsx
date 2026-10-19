@@ -111,7 +111,7 @@ const ReportsPDF = ({ reports, startDate, endDate }) => {
               <>
                 <Text style={styles.name} key={comment._id}>
                   {comment.commentBy.role === "pharmacist" &&
-                  comment.commentBy.isAdmin
+                  comment.commentBy.rank === "Dep Director"
                     ? "Pharm Mrs"
                     : comment.commentBy.role === "pharmacist"
                       ? "Pharm"

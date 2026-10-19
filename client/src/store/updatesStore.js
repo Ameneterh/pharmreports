@@ -91,15 +91,16 @@ export const useUpdatesStore = create((set) => ({
   },
 
   // get all reports
-  getAllUpdates: async (userId) => {
+  getAllUpdates: async (user) => {
     set({ isLoading: true, error: null });
 
     try {
       const response = await axios.get(`${API_URL}/get-updates`);
+
       const updates = response.data.updates;
 
-      const unreadCount = updates.updates.filter(
-        (update) => !update.readBy?.some((r) => r.reader === userId),
+      const unreadCount = updates.filter(
+        (update) => !update.readBy?.some((r) => r.reader === user?._id),
       ).length;
 
       set({

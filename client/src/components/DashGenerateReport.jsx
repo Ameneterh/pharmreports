@@ -261,7 +261,7 @@ export default function DashGenerateReport() {
           className="w-full md:mx-auto"
         >
           {summary?.length > 0 ? (
-            <div className="flex flex-col bg-white p-2 rounded-md w-full lg:w-1/2 mx-auto">
+            <div className="flex flex-col bg-white p-2 rounded-md w-full mx-auto text-sm">
               <h1 className="text-lg font-bold">Report Summary</h1>
               <p className="text-sm font-semibold mb-3">
                 {startDate} to {endDate}
@@ -279,13 +279,16 @@ export default function DashGenerateReport() {
               <p className="font-semibold text-sm mt-3">
                 Total Interventions:{" "}
               </p>
-              {summary.map((item) => (
-                <div key={item.name}>
-                  <p className="flex gap-1">
-                    {item.name}: {item.interventions}
-                  </p>
-                </div>
-              ))}
+
+              {summary
+                .filter((item) => item.interventions > 0)
+                .map((item) => (
+                  <div key={item.name}>
+                    <p className="flex gap-1">
+                      {item.name}: {item.interventions}
+                    </p>
+                  </div>
+                ))}
 
               {/* excel file download link */}
               <div className="flex items-center gap-1 px-3 py-1 bg-blue-700 text-white mt-5 w-fit rounded hover:scale-105 hover:bg-blue-900 transition-all duration-300 text-sm">
