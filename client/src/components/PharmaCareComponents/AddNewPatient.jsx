@@ -343,6 +343,16 @@ export default function AddNewPatient() {
                   </p>
 
                   <div className="flex items-center gap-2 w-full">
+                    {/* edit records link */}
+                    <Link
+                      to={`/edit-patient-records/${hospitalNumber}`}
+                      className="bg-blue-700 py-[6px] px-4 text-white rounded text-sm font-light hover:scale-105 transition-all duration-500 flex items-center gap-2 max-w-fit cursor-pointer mt-4"
+                      // onClick={() => handleViewRecord(hospitalNumber)}
+                    >
+                      <MdEditNote size={20} />{" "}
+                      <span className="inline-block">Review Encounters</span>
+                    </Link>
+
                     {/* add encounter link */}
                     <Link
                       to={`/edit-patient-records/${hospitalNumber}`}
@@ -353,25 +363,15 @@ export default function AddNewPatient() {
                       <span className="inline-block">Add Encounter</span>
                     </Link>
 
-                    {/* edit records link */}
-                    <Link
-                      to={`/edit-patient-records/${hospitalNumber}`}
-                      className="bg-blue-700 py-[6px] px-4 text-white rounded text-sm font-light hover:scale-105 transition-all duration-500 flex items-center gap-2 max-w-fit cursor-pointer mt-4"
-                      // onClick={() => handleViewRecord(hospitalNumber)}
-                    >
-                      <MdEditNote size={20} />{" "}
-                      <span className="inline-block">Add Record</span>
-                    </Link>
-
                     {/* view records link */}
-                    <Link
+                    {/* <Link
                       to={`/view-patient-records/${hospitalNumber}`}
                       className="bg-blue-700 py-[6px] px-4 text-white rounded text-sm font-light hover:scale-105 transition-all duration-500 flex items-center gap-2 max-w-fit cursor-pointer mt-4"
                       // onClick={() => handleViewRecord(hospitalNumber)}
                     >
                       <BiSolidBinoculars size={20} />{" "}
                       <span className="inline-block">View Record</span>
-                    </Link>
+                    </Link> */}
                   </div>
                 </div>
               ) : (

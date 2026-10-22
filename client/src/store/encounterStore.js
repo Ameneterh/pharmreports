@@ -3,8 +3,8 @@ import axios from "axios";
 
 const API_URL =
   import.meta.env.MODE === "development"
-    ? "http://localhost:5000/server/patient"
-    : "/server/patient";
+    ? "http://localhost:5000/server/encounter"
+    : "/server/encounter";
 
 const DOC_URL =
   import.meta.env.MODE === "development"
