@@ -172,7 +172,7 @@ export default function DashSidebar() {
                     <MdArrowForwardIos size={16} className="rotate-90" />
                   )}
                 </p>
-                {openReportsLinks && user.isAdmin && (
+                {openReportsLinks && user && (
                   <>
                     {(user.role === "pharmacist" ||
                       user.role === "pharmtech") && (
