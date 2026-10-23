@@ -176,20 +176,18 @@ export default function DashSidebar() {
                   <>
                     {(user.role === "pharmacist" ||
                       user.role === "pharmtech") && (
-                      <>
-                        <Link
-                          to="/user-dashboard?tab=send-report"
-                          onClick={() => setOpenReportsLinks(false)}
+                      <Link
+                        to="/user-dashboard?tab=send-report"
+                        onClick={() => setOpenReportsLinks(false)}
+                      >
+                        <Sidebar.Item
+                          active={tab === "send-report"}
+                          icon={MdArrowRight}
+                          as="div"
                         >
-                          <Sidebar.Item
-                            active={tab === "send-report"}
-                            icon={MdArrowRight}
-                            as="div"
-                          >
-                            Send Report
-                          </Sidebar.Item>
-                        </Link>
-                      </>
+                          Send Report
+                        </Sidebar.Item>
+                      </Link>
                     )}
 
                     <Link
@@ -242,53 +240,56 @@ export default function DashSidebar() {
                 <MdArrowForwardIos size={16} className="rotate-90" />
               )}
             </p>
-            {openPharmaCareLinks && user.isAdmin && (
-              <>
-                <Link
-                  to="/user-dashboard?tab=add-patient"
-                  onClick={() => setOpenPharmaCareLinks(false)}
-                >
-                  <Sidebar.Item
-                    active={tab === "add-patient"}
-                    icon={MdArrowRight}
-                    as="div"
-                  >
-                    Add New Patient
-                  </Sidebar.Item>
-                </Link>
 
-                <Link
-                  to="/user-dashboard?tab=add-encounter"
-                  onClick={() => setOpenPharmaCareLinks(false)}
-                >
-                  <Sidebar.Item
-                    active={tab === "add-encounter"}
-                    icon={MdArrowRight}
-                    as="div"
-                  >
-                    Add New Encounter
-                  </Sidebar.Item>
-                </Link>
-
-                <Link
-                  to="/user-dashboard?tab=review-encounter"
-                  onClick={() => setOpenPharmaCareLinks(false)}
-                >
-                  <Sidebar.Item
-                    active={tab === "review-encounter"}
-                    icon={MdArrowRight}
-                    as="div"
-                  >
-                    Review Encounter
-                  </Sidebar.Item>
-                </Link>
-              </>
+            {(user.username === "Ameneterh" || user.role === "architect") && (
+              <></>
             )}
-          </div>
 
-          {(user.username === "Ameneterh" || user.role === "architect") && (
-            <></>
-          )}
+            {/* {openPharmaCareLinks && user && ( */}
+            {openPharmaCareLinks &&
+              (user.username === "Ameneterh" || user.role === "architect") && (
+                <>
+                  <Link
+                    to="/user-dashboard?tab=add-patient"
+                    onClick={() => setOpenPharmaCareLinks(false)}
+                  >
+                    <Sidebar.Item
+                      active={tab === "add-patient"}
+                      icon={MdArrowRight}
+                      as="div"
+                    >
+                      Add New Patient
+                    </Sidebar.Item>
+                  </Link>
+
+                  <Link
+                    to="/user-dashboard?tab=add-encounter"
+                    onClick={() => setOpenPharmaCareLinks(false)}
+                  >
+                    <Sidebar.Item
+                      active={tab === "add-encounter"}
+                      icon={MdArrowRight}
+                      as="div"
+                    >
+                      Add New Encounter
+                    </Sidebar.Item>
+                  </Link>
+
+                  <Link
+                    to="/user-dashboard?tab=review-encounter"
+                    onClick={() => setOpenPharmaCareLinks(false)}
+                  >
+                    <Sidebar.Item
+                      active={tab === "review-encounter"}
+                      icon={MdArrowRight}
+                      as="div"
+                    >
+                      Review Encounter
+                    </Sidebar.Item>
+                  </Link>
+                </>
+              )}
+          </div>
         </Sidebar.ItemGroup>
       </Sidebar.Items>
     </Sidebar>
