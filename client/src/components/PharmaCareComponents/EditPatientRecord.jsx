@@ -2,7 +2,7 @@ import { FaRegHospital } from "react-icons/fa";
 import { FaBedPulse } from "react-icons/fa6";
 import { useAuthStore } from "../../store/authStore";
 
-export default function ViewRecord({ patient }) {
+export default function EditPatientRecord({ patient }) {
   const { user } = useAuthStore();
 
   const calculateAge = (dateOfBirth) => {

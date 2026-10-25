@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import Encounter from "../models/Encounter.js";
-import Patient from "../models/Patient.js";
-import Consultant from "../models/Consultant.js";
+import Encounter from "../models/encounter.model.js";
+import Patient from "../models/patient.model.js";
+// import Consultant from "../models/Consultant.js";
 
 export const addEncounter = async (req, res) => {
   try {
@@ -69,24 +69,40 @@ export const addEncounter = async (req, res) => {
       });
     }
 
-    // 4. Validate optional consultant reference
-    if (consultant?.user) {
-      if (!mongoose.isValidObjectId(consultant.user)) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid consultant ID.",
-        });
-      }
+    // Check whether the patient already has an open encounter
+    const openEncounter = await Encounter.findOne({
+      patient: existingPatient._id,
+      status: "open",
+    });
 
-      const existingConsultant = await Consultant.findById(consultant.user);
-
-      if (!existingConsultant) {
-        return res.status(404).json({
-          success: false,
-          message: "Consultant not found.",
-        });
-      }
+    if (openEncounter) {
+      return res.status(409).json({
+        success: false,
+        code: "OPEN_ENCOUNTER_EXISTS",
+        message:
+          "This patient already has an open encounter. Update the existing encounter or close it before creating a new one.",
+        encounter: openEncounter,
+      });
     }
+
+    // 4. Validate optional consultant reference
+    // if (consultant?.user) {
+    //   if (!mongoose.isValidObjectId(consultant.user)) {
+    //     return res.status(400).json({
+    //       success: false,
+    //       message: "Invalid consultant ID.",
+    //     });
+    //   }
+
+    //   const existingConsultant = await Consultant.findById(consultant.user);
+
+    //   if (!existingConsultant) {
+    //     return res.status(404).json({
+    //       success: false,
+    //       message: "Consultant not found.",
+    //     });
+    //   }
+    // }
 
     // 5. Validate measurements
     if (height !== undefined && (!Number.isFinite(height) || height <= 0)) {
@@ -150,7 +166,7 @@ export const addEncounter = async (req, res) => {
       consultant: {
         name: consultant?.name,
         specialty: consultant?.specialty,
-        user: consultant?.user || undefined,
+        // user: consultant?.user || undefined,
       },
 
       height,

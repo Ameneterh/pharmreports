@@ -3,11 +3,10 @@ import { motion } from "framer-motion";
 import { usePatientStore } from "../../store/patientStore";
 import { CiSearch } from "react-icons/ci";
 import { GiSpyglass } from "react-icons/gi";
-import { MdEditNote, MdPersonAddAlt1 } from "react-icons/md";
-import { BiSolidBinoculars } from "react-icons/bi";
+import { MdArrowForwardIos, MdEditNote, MdPersonAddAlt1 } from "react-icons/md";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -92,6 +91,7 @@ export default function AddNewPatient() {
     return today.toLocaleDateString("en-CA"); // YYYY-MM-DD
   };
 
+  const navigate = useNavigate();
   const [hospitalNumber, setHospitalNumber] = useState("");
   const [openAddPatientField, setOpenAddPatientField] = useState(false);
   const [patients, setPatients] = useState([]);
@@ -239,8 +239,6 @@ export default function AddNewPatient() {
 
     const result = await addPatient(payload);
 
-    console.log("Add patient result:", result);
-
     if (result.success) {
       toast.success("Patient added successfully.");
       setForm({
@@ -254,14 +252,32 @@ export default function AddNewPatient() {
           alcohol: { ...initialForm.socialHistory.alcohol },
         },
       });
+      navigate("/user-dashboard?tab=add-encounter");
     }
   };
 
   // search function
-  const handleSearch = () => {
-    if (!hospitalNumber.trim().toLowerCase()) return;
+  // const handleSearch = () => {
+  //   if (!hospitalNumber.trim().toLowerCase()) return;
 
-    getPatient(hospitalNumber.trim().toLowerCase());
+  //   getPatient(hospitalNumber.trim().toLowerCase());
+  // };
+
+  // const getPatients = async ({ startDate, endDate }) => {
+  //   try {
+  //     const patients = await getAllPatients({ startDate, endDate });
+
+  //     setPatients(patients);
+  //   } catch (error) {
+  //     toast.error(error);
+  //   }
+  // };
+
+  // search function
+  const handleSearch = () => {
+    if (!form.hospitalNumber.trim().toLowerCase()) return;
+
+    getPatient(form.hospitalNumber.trim().toLowerCase());
   };
 
   const getPatients = async ({ startDate, endDate }) => {
@@ -295,38 +311,48 @@ export default function AddNewPatient() {
         transition={{ duration: 0.5 }}
         className="min-h-screen max-w-7xl w-full mx-auto mt-2 mb-10 md:p-4 backdrop-filter backdrop-blur-lg rounded-xl"
       >
-        <p className="text-xl font-extrabold mb-6 text-blue-950 text-center border-b-2 border-b-red-900 pb-2">
-          Add/Update, View Patient Record
+        <p className="flex items-center text-sm mb-6 text-blue-950 border-b-2 border-b-red-900 pb-2">
+          Pharmaceutical Care Plan{" "}
+          <MdArrowForwardIos size={12} className="mx-1" />{" "}
+          <span className="font-bold">Add New Patient</span>
         </p>
 
         <div className="flex flex-col gap-6">
-          <div className="flex gap-4 p-2 pt-4 rounded-md bg-white">
-            <div className="flex items-center relative w-full">
-              <p className="text-xs absolute -top-3 left-3 bg-white px-2">
-                EMR Number
-              </p>
+          {!patient && (
+            <div className="flex gap-4 p-2 pt-4 rounded-md bg-white">
+              <div className="flex items-center relative w-full">
+                <p className="text-xs absolute -top-3 left-3 bg-white px-2">
+                  EMR Number
+                </p>
 
-              <input
-                value={hospitalNumber}
-                className="rounded-full w-full py-1 pl-8 focus:outline-none uppercase"
-                onChange={(e) => setHospitalNumber(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleSearch();
-                  }
-                }}
-              />
+                <input
+                  name="hospitalNumber"
+                  value={form.hospitalNumber}
+                  onChange={handleChange}
+                  // value={hospitalNumber}
+                  className="rounded-full w-full py-1 pl-8 focus:outline-none uppercase"
+                  // onChange={(e) => setHospitalNumber(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleSearch();
+                    }
+                  }}
+                />
 
-              <CiSearch className="absolute left-2 font-extrabold" size={20} />
+                <CiSearch
+                  className="absolute left-2 font-extrabold"
+                  size={20}
+                />
+              </div>
+              <button
+                className="bg-blue-700 py-[6px] px-4 text-white rounded text-sm font-light hover:scale-105 transition-all duration-500 flex items-center gap-2"
+                onClick={handleSearch}
+              >
+                <GiSpyglass size={20} />{" "}
+                <span className="hidden md:inline-block">Search</span>
+              </button>
             </div>
-            <button
-              className="bg-blue-700 py-[6px] px-4 text-white rounded text-sm font-light hover:scale-105 transition-all duration-500 flex items-center gap-2"
-              onClick={handleSearch}
-            >
-              <GiSpyglass size={20} />{" "}
-              <span className="hidden md:inline-block">Search</span>
-            </button>
-          </div>
+          )}
 
           {/* result of patient existence or not */}
           {patient && (
@@ -334,7 +360,8 @@ export default function AddNewPatient() {
               {patient?.length > 0 ? (
                 <div className="flex flex-col text-sm">
                   <p className="font-bold">
-                    Patient <span className="uppercase">{hospitalNumber}</span>{" "}
+                    Patient{" "}
+                    <span className="uppercase">{form.hospitalNumber}</span>{" "}
                     already exists
                   </p>
                   <p className="font-bold">
@@ -345,7 +372,7 @@ export default function AddNewPatient() {
                   <div className="flex items-center gap-2 w-full">
                     {/* edit records link */}
                     <Link
-                      to={`/edit-patient-records/${hospitalNumber}`}
+                      to={`/edit-patient-records/${form.hospitalNumber}`}
                       className="bg-blue-700 py-[6px] px-4 text-white rounded text-sm font-light hover:scale-105 transition-all duration-500 flex items-center gap-2 max-w-fit cursor-pointer mt-4"
                       // onClick={() => handleViewRecord(hospitalNumber)}
                     >
@@ -355,7 +382,7 @@ export default function AddNewPatient() {
 
                     {/* add encounter link */}
                     <Link
-                      to={`/edit-patient-records/${hospitalNumber}`}
+                      to={`/edit-patient-records/${form.hospitalNumber}`}
                       className="bg-blue-700 py-[6px] px-4 text-white rounded text-sm font-light hover:scale-105 transition-all duration-500 flex items-center gap-2 max-w-fit cursor-pointer mt-4"
                       // onClick={() => handleViewRecord(hospitalNumber)}
                     >
@@ -378,8 +405,10 @@ export default function AddNewPatient() {
                 <div>
                   <p className="flex items-center text-sm text-red-800 mb-3">
                     Patient with EMR Number{" "}
-                    <span className="uppercase px-1">{hospitalNumber}</span> not
-                    found!
+                    <span className="uppercase px-1">
+                      {form.hospitalNumber}
+                    </span>{" "}
+                    not found!
                   </p>
 
                   <div
@@ -936,6 +965,7 @@ export default function AddNewPatient() {
                                 e.target.value,
                               )
                             }
+                            placeholder="e.g. 6 Hero beer bottles/day"
                           />
                         </Field>
 

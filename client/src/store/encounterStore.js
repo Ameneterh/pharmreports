@@ -21,7 +21,7 @@ const useEncounterStore = create((set, get) => ({
   message: null,
 
   // Save a new encounter
-  saveEncounter: async (encounterData) => {
+  addEncounter: async (encounterData) => {
     set({
       isLoading: true,
       error: null,

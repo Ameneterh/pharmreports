@@ -3,13 +3,14 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useAuthStore } from "../store/authStore.js";
-import PharmaCareLinks from "../components/PharmaCareComponents/PharmaCareLinks.jsx";
+import { useAuthStore } from "../../store/authStore.js";
+import PharmaCareLinks from "./PharmaCareLinks.jsx";
 import { TiUserAdd } from "react-icons/ti";
 import { FaUserEdit } from "react-icons/fa";
 import { GrOverview } from "react-icons/gr";
+import { MdArrowForwardIos } from "react-icons/md";
 
-export default function PharmaCarePage() {
+export default function ReviewEncounter() {
   const { user } = useAuthStore();
 
   const navigate = useNavigate();
@@ -56,25 +57,27 @@ export default function PharmaCarePage() {
         transition={{ duration: 0.5 }}
         className="min-h-screen max-w-7xl w-full mx-auto mt-2 mb-10 p-4 backdrop-filter backdrop-blur-lg rounded-xl shadow-2xl"
       >
-        <p className="text-xl font-extrabold mb-6 text-blue-950 text-center border-b-2 border-b-red-900 pb-2">
-          Pharmaceutical Care Plan
+        <p className="flex items-center text-sm mb-6 text-blue-950 border-b-2 border-b-red-900 pb-2">
+          Pharmaceutical Care Plan{" "}
+          <MdArrowForwardIos size={12} className="mx-1" />{" "}
+          <span className="font-bold">Review Encounter</span>
         </p>
         <div className="flex flex-wrap gap-6">
-          <PharmaCareLinks
+          {/* <PharmaCareLinks
             linkUrl="/user-dashboard?tab=add-patient"
             title="Add/Update Patient"
             icon={TiUserAdd}
-          />
+          /> */}
           {/* <PharmaCareLinks
             linkUrl="/user-dashboard?tab=update-record"
             title="Update Record"
             icon={FaUserEdit}
           /> */}
-          <PharmaCareLinks
+          {/* <PharmaCareLinks
             linkUrl="/user-dashboard?tab=add-patient"
             title="View Record"
             icon={GrOverview}
-          />
+          /> */}
         </div>
       </motion.div>
     </div>

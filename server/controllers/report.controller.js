@@ -68,6 +68,37 @@ export const sendReport = async (req, res) => {
       });
     }
 
+    // Prevent a user from submitting more than one report within a rolling 24-hour period.
+    const recent = dayjs().tz("Africa/Lagos");
+    const twentyFourHoursAgo = recent.subtract(24, "hours").toDate();
+
+    // Use the authenticated user's ID rather than trusting the reporter value supplied by the client.
+    const userId = req.user?._id;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Authentication required.",
+      });
+    }
+
+    const recentReport = await Report.findOne({
+      reporter: userId,
+      createdAt: { $gte: twentyFourHoursAgo },
+    });
+
+    if (recentReport) {
+      const nextSubmissionTime = dayjs(recentReport.createdAt)
+        .add(24, "hours")
+        .tz("Africa/Lagos")
+        .format("DD/MM/YYYY [at] hh:mm A");
+
+      return res.status(429).json({
+        success: false,
+        message: `You cannot submit more than one report within 24 hours. Please try again after ${nextSubmissionTime}.`,
+      });
+    }
+
     // Map your fields to deadline logic
     const reportDate = dutyDateTime;
     const shift = timeOfDuty;

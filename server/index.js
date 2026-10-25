@@ -3,6 +3,7 @@ import contactRouter from "./routes/contact.routes.js ";
 import reportRouter from "./routes/report.routes.js";
 import updateRouter from "./routes/update.routes.js";
 import patientRouter from "./routes/patient.routes.js";
+import encounterRouter from "./routes/encounter.routes.js";
 
 import express from "express";
 import dotenv from "dotenv";
@@ -34,6 +35,7 @@ app.use("/server/contact", contactRouter);
 app.use("/server/report", reportRouter);
 app.use("/server/update", updateRouter);
 app.use("/server/patient", patientRouter);
+app.use("/server/encounter", encounterRouter);
 
 app.use(
   "/server/exports",

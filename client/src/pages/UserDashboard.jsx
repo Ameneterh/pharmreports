@@ -13,8 +13,9 @@ import DashReports from "../components/DashReports";
 import DashAddUser from "../components/DashAddUser";
 import DashGenerateReport from "../components/DashGenerateReport";
 import DashGeneralInformation from "../components/DashGeneralInformation";
-import PharmaCarePage from "./PharmaCarePage";
 import AddNewPatient from "../components/PharmaCareComponents/AddNewPatient";
+import ReviewEncounter from "../components/PharmaCareComponents/ReviewEncounter";
+import AddEncounter from "../components/PharmaCareComponents/AddEncounter";
 
 export default function UserDashboard() {
   const { user, logout, isLoading } = useAuthStore();
@@ -48,33 +49,26 @@ export default function UserDashboard() {
           <DashSidebar />
         </div>
 
-        {/* profile ... */}
+        {/* user */}
         {tab === "profile" && <DashProfile />}
-
-        {/* for users */}
+        {tab === "add-user" && <DashAddUser />}
         {tab === "users" && <DashUsers />}
 
         {/* for dashboard */}
         {tab === "dash" && <DashboardComponent />}
 
-        {/* for invoice creation */}
+        {/* reports routes */}
         {tab === "send-report" && <SendReport />}
-
-        {/* for adding a new handler */}
-        {tab === "add-user" && <DashAddUser />}
-
-        {/* view clients */}
-        {tab === "general-information" && <DashGeneralInformation />}
-
-        {/* view business */}
         {tab === "reports" && <DashReports />}
-
-        {/* generate reports */}
         {tab === "generate-report" && <DashGenerateReport />}
 
+        {/* view general information */}
+        {tab === "general-information" && <DashGeneralInformation />}
+
         {/* pharma care links */}
-        {tab === "pharmacare" && <PharmaCarePage />}
         {tab === "add-patient" && <AddNewPatient />}
+        {tab === "add-encounter" && <AddEncounter />}
+        {tab === "review-encounter" && <ReviewEncounter />}
       </motion.div>
     </MainLayout>
   );

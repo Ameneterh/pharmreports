@@ -43,10 +43,10 @@ const encounterSchema = new mongoose.Schema(
     consultant: {
       name: String,
       specialty: String,
-      user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
+      // user: {
+      //   type: mongoose.Schema.Types.ObjectId,
+      //   ref: "User",
+      // },
     },
 
     // Patient's measurements at this encounter
@@ -116,14 +116,14 @@ const encounterSchema = new mongoose.Schema(
   },
 );
 
-encounterSchema.index({
-  patient: 1,
-  encounterDate: -1,
-});
-
-encounterSchema.index({
-  patient: 1,
-  status: 1,
-});
+encounterSchema.index(
+  { patient: 1, status: 1, encounterDate: -1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      status: "open",
+    },
+  },
+);
 
 export default mongoose.model("Encounter", encounterSchema);

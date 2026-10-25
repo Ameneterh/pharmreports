@@ -84,7 +84,7 @@ export default function DashAddUser() {
   };
 
   return (
-    <div className="mx-auto p-3 md:px-10 w-full bg-white mt-3">
+    <div className="mx-auto p-3 md:px-10 w-full mt-3">
       <motion.div
         variants={fadeInUp}
         initial="hidden"
