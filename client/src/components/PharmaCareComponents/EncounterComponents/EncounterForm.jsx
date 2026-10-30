@@ -1,5 +1,6 @@
 import { useState } from "react";
 import useEncounterStore from "../../../store/encounterStore";
+import toast from "react-hot-toast";
 
 const initialFormData = {
   encounterType: "outpatient",
@@ -121,7 +122,7 @@ function Section({ title, description, children }) {
 }
 
 export default function EncounterForm({ patientId, onSuccess, onCancel }) {
-  const { addEncounter } = useEncounterStore();
+  const { addEncounter, isLoading } = useEncounterStore();
 
   const [formData, setFormData] = useState(initialFormData);
   const [loading, setLoading] = useState(false);
@@ -158,12 +159,10 @@ export default function EncounterForm({ patientId, onSuccess, onCancel }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    setError("");
-    setSuccess("");
-
     // 1. Validate the patient selection.
     if (!patientId) {
-      setError("Please select a patient before creating an encounter.");
+      toast.error("Please select a patient before creating an encounter.");
+      //   setError("Please select a patient before creating an encounter.");
       return;
     }
 
@@ -173,7 +172,8 @@ export default function EncounterForm({ patientId, onSuccess, onCancel }) {
       formData.dischargeDate &&
       formData.dischargeDate < formData.admissionDate
     ) {
-      setError("Discharge date cannot precede admission date.");
+      toast.error("Discharge date cannot precede admission date.");
+      //   setError("Discharge date cannot precede admission date.");
       return;
     }
 
@@ -183,12 +183,14 @@ export default function EncounterForm({ patientId, onSuccess, onCancel }) {
     const weight = formData.weight === "" ? undefined : Number(formData.weight);
 
     if (height !== undefined && (!Number.isFinite(height) || height <= 0)) {
-      setError("Height must be a positive number.");
+      toast.error("Height must be a positive number.");
+      //   setError("Height must be a positive number.");
       return;
     }
 
     if (weight !== undefined && (!Number.isFinite(weight) || weight <= 0)) {
-      setError("Weight must be a positive number.");
+      toast.error("Weight must be a positive number.");
+      //   setError("Weight must be a positive number.");
       return;
     }
 
@@ -245,16 +247,35 @@ export default function EncounterForm({ patientId, onSuccess, onCancel }) {
     };
 
     try {
-      setLoading(true);
+      //   setLoading(true);
 
       // 5. Send the request to the backend.
       const response = await addEncounter(payload);
 
-      console.log("Encounter submission response:", response);
+      console.log("response: ", response);
+
+      //   if (result.success) {
+      //     toast.success("Patient added successfully.");
+      //     setForm({
+      //       ...initialForm,
+      //       emergencyContact: {
+      //         ...initialForm.emergencyContact,
+      //       },
+      //       socialHistory: {
+      //         ...initialForm.socialHistory,
+      //         smoking: { ...initialForm.socialHistory.smoking },
+      //         alcohol: { ...initialForm.socialHistory.alcohol },
+      //       },
+      //     });
+      //     navigate("/user-dashboard?tab=add-encounter");
+      //   }
+
+      toast.error("Encounter submission response:", response);
 
       const savedEncounter = response.encounter;
 
-      setSuccess(response.message || "Encounter saved successfully.");
+      //   toast.success(response.message || "Encounter saved successfully.");
+      //   setSuccess(response.message || "Encounter saved successfully.");
 
       // 6. Notify the parent component.
       if (onSuccess) {
@@ -272,9 +293,9 @@ export default function EncounterForm({ patientId, onSuccess, onCancel }) {
       const responseData = err.response?.data;
 
       if (responseData?.errors?.length) {
-        setError(responseData.errors.join(" "));
+        toast.error(responseData.errors.join(" "));
       } else {
-        setError(
+        toast.error(
           responseData?.message ||
             "Unable to save the encounter. Please try again.",
         );
@@ -638,7 +659,7 @@ export default function EncounterForm({ patientId, onSuccess, onCancel }) {
           <button
             type="button"
             onClick={onCancel}
-            disabled={loading}
+            disabled={isLoading}
             className="rounded-md border border-gray-300 px-5 py-2.5 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
           >
             Cancel
@@ -647,10 +668,10 @@ export default function EncounterForm({ patientId, onSuccess, onCancel }) {
 
         <button
           type="submit"
-          disabled={loading}
+          disabled={isLoading}
           className="rounded-md bg-blue-600 px-5 py-2.5 font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {loading ? "Saving Encounter..." : "Save Encounter"}
+          {isLoading ? "Saving Encounter..." : "Save Encounter"}
         </button>
       </div>
     </form>

@@ -70,7 +70,7 @@ export const sendReport = async (req, res) => {
 
     // Prevent a user from submitting more than one report within a rolling 24-hour period.
     const recent = dayjs().tz("Africa/Lagos");
-    const twentyFourHoursAgo = recent.subtract(24, "hours").toDate();
+    const curePeriod = recent.subtract(6, "hours").toDate();
 
     // Use the authenticated user's ID rather than trusting the reporter value supplied by the client.
     const userId = req.user?._id;
@@ -84,12 +84,12 @@ export const sendReport = async (req, res) => {
 
     const recentReport = await Report.findOne({
       reporter: userId,
-      createdAt: { $gte: twentyFourHoursAgo },
+      createdAt: { $gte: curePeriod },
     });
 
     if (recentReport) {
       const nextSubmissionTime = dayjs(recentReport.createdAt)
-        .add(24, "hours")
+        .add(6, "hours")
         .tz("Africa/Lagos")
         .format("DD/MM/YYYY [at] hh:mm A");
 

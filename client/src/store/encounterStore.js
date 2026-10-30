@@ -34,7 +34,7 @@ const useEncounterStore = create((set, get) => ({
         encounterData,
       );
 
-      const savedEncounter = response.data.encounter ?? response.data;
+      const savedEncounter = response.encounter ?? response.data;
 
       set((state) => ({
         encounters: [savedEncounter, ...(state.encounters || [])],

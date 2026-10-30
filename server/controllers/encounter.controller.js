@@ -73,14 +73,14 @@ export const addEncounter = async (req, res) => {
     const openEncounter = await Encounter.findOne({
       patient: existingPatient._id,
       status: "open",
+      encounterType: encounterType,
     });
 
     if (openEncounter) {
       return res.status(409).json({
         success: false,
         code: "OPEN_ENCOUNTER_EXISTS",
-        message:
-          "This patient already has an open encounter. Update the existing encounter or close it before creating a new one.",
+        message: `This patient already has an open encounter of type ${encounterType}. Update the existing encounter or close it before creating a new one.`,
         encounter: openEncounter,
       });
     }
@@ -201,6 +201,9 @@ export const addEncounter = async (req, res) => {
     });
   } catch (error) {
     console.error("Save encounter error:", error);
+    console.error("Error name:", error.name);
+    console.error("Error message:", error.message);
+    console.error("Error code:", error.code);
 
     if (error.name === "ValidationError") {
       return res.status(400).json({
@@ -217,9 +220,21 @@ export const addEncounter = async (req, res) => {
       });
     }
 
+    // MongoDB duplicate-key error
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "A duplicate value violates a unique database constraint.",
+        field: Object.keys(error.keyPattern || {}),
+      });
+    }
+
     return res.status(500).json({
       success: false,
       message: "An error occurred while saving the encounter.",
+      ...(process.env.NODE_ENV !== "production" && {
+        debug: error.message,
+      }),
     });
   }
 };
